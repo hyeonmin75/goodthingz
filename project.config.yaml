@@ -1,0 +1,35 @@
+# Project-level configuration.
+# For another project, copy this file and change the values without changing the structure.
+
+project:
+  name: GoodThingz
+  language: ko-KR
+
+domains:
+  primary: goodthingz.com
+  wordpress: blog.goodthingz.com
+
+positioning:
+  type: free-public-data-service
+  description: >
+    공공데이터를 사용자가 실제 생활에서 활용하기 쉽게 검색·비교·분석하는
+    무료 전문 데이터 서비스
+
+servicePolicy:
+  coreFeaturesFree: true
+  payments: false
+  subscriptions: false
+  paywall: false
+  loginRequiredForCoreFeatures: false
+  qualityGoal: premium-grade UX
+
+seoPolicy:
+  indexingStrategy: value-gated indexing
+  massPageGeneration: false
+  requiresAddedValueBeyondSourceData: true
+  urlIndexDecisionRequired:
+    - INDEX
+    - NOINDEX
+    - DO NOT CREATE
+
+apis: []
