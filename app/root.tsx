@@ -31,6 +31,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<Meta />
 				<Links />
+				<meta name="naver-site-verification" content="a0d91b916fa94e3cbf06482ea666aca2146758f7" />
 			</head>
 			<body>
 				{children}
