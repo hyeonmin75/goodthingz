@@ -1,18 +1,22 @@
 import { Link } from "react-router";
 
 import type { Route } from "./+types/pet-travel-place";
-import { canonicalUrl } from "../seo";
+import { canonicalUrl, socialMeta } from "../seo";
 
 export function meta({ params }: Route.MetaArgs) {
 	const contentId = params.contentId ?? "unknown";
+	const title = `반려동물 동반 장소 상세 ${contentId} - GoodThingz`;
+	const description =
+		"공공데이터 개별 장소 상세는 공유와 서비스 이용을 위한 화면이며 검색 색인 대상이 아닙니다.";
 
 	return [
-		{ title: `반려동물 동반 장소 상세 ${contentId} - GoodThingz` },
-		{
-			name: "description",
-			content:
-				"공공데이터 개별 장소 상세는 공유와 서비스 이용을 위한 화면이며 검색 색인 대상이 아닙니다.",
-		},
+		{ title },
+		{ name: "description", content: description },
+		...socialMeta({
+			title,
+			description,
+			path: `/pet-travel/places/${contentId}`,
+		}),
 		{ name: "robots", content: "noindex,follow" },
 		{
 			tagName: "link",

@@ -1,16 +1,17 @@
 import { Link } from "react-router";
 
 import type { Route } from "./+types/pet-travel-search";
-import { canonicalUrl } from "../seo";
+import { canonicalUrl, socialMeta } from "../seo";
 
 export function meta({}: Route.MetaArgs) {
+	const title = "반려동물 동반여행 검색 결과 - GoodThingz";
+	const description =
+		"사용자 검색 조건에 따라 달라지는 반려동물 동반여행 검색 결과입니다.";
+
 	return [
-		{ title: "반려동물 동반여행 검색 결과 - GoodThingz" },
-		{
-			name: "description",
-			content:
-				"사용자 검색 조건에 따라 달라지는 반려동물 동반여행 검색 결과입니다.",
-		},
+		{ title },
+		{ name: "description", content: description },
+		...socialMeta({ title, description, path: "/pet-travel/search" }),
 		{ name: "robots", content: "noindex,follow" },
 		{ tagName: "link", rel: "canonical", href: canonicalUrl("/pet-travel") },
 	];

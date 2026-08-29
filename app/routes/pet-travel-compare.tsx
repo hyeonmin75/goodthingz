@@ -1,16 +1,17 @@
 import { Link } from "react-router";
 
 import type { Route } from "./+types/pet-travel-compare";
-import { canonicalUrl } from "../seo";
+import { canonicalUrl, socialMeta } from "../seo";
 
 export function meta({}: Route.MetaArgs) {
+	const title = "반려동물 동반 장소 비교 - GoodThingz";
+	const description =
+		"사용자가 선택한 반려동물 동반 장소 조합 비교 화면입니다. 조합별 대량 색인을 막기 위해 noindex를 적용합니다.";
+
 	return [
-		{ title: "반려동물 동반 장소 비교 - GoodThingz" },
-		{
-			name: "description",
-			content:
-				"사용자가 선택한 반려동물 동반 장소 조합 비교 화면입니다. 조합별 대량 색인을 막기 위해 noindex를 적용합니다.",
-		},
+		{ title },
+		{ name: "description", content: description },
+		...socialMeta({ title, description, path: "/pet-travel/compare" }),
 		{ name: "robots", content: "noindex,follow" },
 		{ tagName: "link", rel: "canonical", href: canonicalUrl("/pet-travel") },
 	];

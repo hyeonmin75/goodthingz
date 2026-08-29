@@ -15,6 +15,7 @@ import {
 	DATA_PROVIDER,
 	DATA_SERVICE,
 	DATA_UPDATED,
+	socialMeta,
 	webPageJsonLd,
 } from "../seo";
 
@@ -83,6 +84,11 @@ export function meta({ data }: Route.MetaArgs) {
 			name: "description",
 			content: description,
 		},
+		...socialMeta({
+			title,
+			description,
+			path: "/pet-travel",
+		}),
 		{ name: "robots", content: shouldNoindex ? "noindex,follow" : "index,follow" },
 		{ tagName: "link", rel: "canonical", href: canonicalUrl("/pet-travel") },
 		{

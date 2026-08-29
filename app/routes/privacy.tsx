@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 
 import type { Route } from "./+types/privacy";
-import { breadcrumbJsonLd, canonicalUrl, webPageJsonLd } from "../seo";
+import { breadcrumbJsonLd, canonicalUrl, socialMeta, webPageJsonLd } from "../seo";
 
 export function meta({}: Route.MetaArgs) {
 	const title = "개인정보 처리 안내 - GoodThingz";
@@ -11,6 +11,7 @@ export function meta({}: Route.MetaArgs) {
 	return [
 		{ title },
 		{ name: "description", content: description },
+		...socialMeta({ title, description, path: "/privacy" }),
 		{ name: "robots", content: "index,follow" },
 		{ tagName: "link", rel: "canonical", href: canonicalUrl("/privacy") },
 		{

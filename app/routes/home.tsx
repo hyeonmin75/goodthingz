@@ -5,6 +5,7 @@ import {
 	DATA_PROVIDER,
 	DATA_UPDATED,
 	SITE_NAME,
+	socialMeta,
 	webPageJsonLd,
 } from "../seo";
 
@@ -76,6 +77,14 @@ export function meta({}: Route.MetaArgs) {
 			name: "description",
 			content: description,
 		},
+		...socialMeta({
+			title,
+			description,
+			path: "/",
+			imagePath: HERO_IMAGE_PATH,
+			imageAlt:
+				"반려동물과 함께 갈 장소를 조건, 거리, 지도 기준으로 확인하는 GoodThingz 화면",
+		}),
 		{ name: "robots", content: "index,follow" },
 		{ tagName: "link", rel: "canonical", href: canonicalUrl("/") },
 		{

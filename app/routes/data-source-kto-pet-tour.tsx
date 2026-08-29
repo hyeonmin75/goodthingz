@@ -8,6 +8,7 @@ import {
 	DATA_SERVICE,
 	DATA_SPEC_DATE,
 	DATA_UPDATED,
+	socialMeta,
 	webPageJsonLd,
 } from "../seo";
 
@@ -19,6 +20,11 @@ export function meta({}: Route.MetaArgs) {
 	return [
 		{ title },
 		{ name: "description", content: description },
+		...socialMeta({
+			title,
+			description,
+			path: "/data-sources/kto-pet-tour",
+		}),
 		{ name: "robots", content: "index,follow" },
 		{
 			tagName: "link",

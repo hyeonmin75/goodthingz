@@ -8,7 +8,7 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
-import { ADSENSE_SCRIPT_SRC } from "./adsense";
+import { ADSENSE_CLIENT_ID, ADSENSE_SCRIPT_SRC } from "./adsense";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
@@ -35,6 +35,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 			<head>
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
+				<meta name="google-adsense-account" content={ADSENSE_CLIENT_ID} />
 				<Meta />
 				<Links />
 				<script

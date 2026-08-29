@@ -1,20 +1,21 @@
 import { data, Link } from "react-router";
 
 import type { Route } from "./+types/not-found";
-import { canonicalUrl } from "../seo";
+import { canonicalUrl, socialMeta } from "../seo";
 
 export function loader({}: Route.LoaderArgs) {
 	return data(null, { status: 404 });
 }
 
 export function meta({}: Route.MetaArgs) {
+	const title = "페이지를 찾을 수 없습니다 - GoodThingz";
+	const description =
+		"요청한 GoodThingz 페이지를 찾을 수 없습니다. 반려동물 동반여행 검색으로 이동해 필요한 정보를 다시 확인하세요.";
+
 	return [
-		{ title: "페이지를 찾을 수 없습니다 - GoodThingz" },
-		{
-			name: "description",
-			content:
-				"요청한 GoodThingz 페이지를 찾을 수 없습니다. 반려동물 동반여행 검색으로 이동해 필요한 정보를 다시 확인하세요.",
-		},
+		{ title },
+		{ name: "description", content: description },
+		...socialMeta({ title, description, path: "/" }),
 		{ name: "robots", content: "noindex,follow" },
 		{ tagName: "link", rel: "canonical", href: canonicalUrl("/") },
 	];

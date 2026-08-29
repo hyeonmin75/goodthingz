@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 
 import type { Route } from "./+types/about";
-import { breadcrumbJsonLd, canonicalUrl, webPageJsonLd } from "../seo";
+import { breadcrumbJsonLd, canonicalUrl, socialMeta, webPageJsonLd } from "../seo";
 
 export function meta({}: Route.MetaArgs) {
 	const title = "GoodThingz 소개 - 무료 공공데이터 생활 서비스";
@@ -11,6 +11,7 @@ export function meta({}: Route.MetaArgs) {
 	return [
 		{ title },
 		{ name: "description", content: description },
+		...socialMeta({ title, description, path: "/about" }),
 		{ name: "robots", content: "index,follow" },
 		{ tagName: "link", rel: "canonical", href: canonicalUrl("/about") },
 		{
