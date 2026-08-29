@@ -75,6 +75,12 @@ API 레코드 수만큼 자동 페이지를 생성하지 않는다.
 - 발견한 문제
 - 남아 있는 위험
 
+작업이 끝났지만 사용자가 아직 Git 반영을 요청하지 않은 경우, 마지막에 다음 문장을 안내한다.
+
+```text
+변경사항을 실제 사이트 반영 흐름까지 이어가려면 "커밋하고 GitHub에 push까지 해줘"라고 요청하세요.
+```
+
 # Cloudflare Workers
 
 STOP. Your knowledge of Cloudflare Workers APIs and limits may be outdated. Always retrieve current documentation before any Workers, KV, R2, D1, Durable Objects, Queues, Vectorize, AI, or Agents SDK task.
