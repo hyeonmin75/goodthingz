@@ -197,6 +197,7 @@ export default function PetTravel() {
 		page?: number;
 		useLocation?: boolean;
 		append?: boolean;
+		focusResults?: boolean;
 	}) {
 		setStatus("loading");
 		setErrorMessage(null);
@@ -254,7 +255,9 @@ export default function PetTravel() {
 				void fetchPlaceDetail(nextActive);
 			}
 
-			resultsRef.current?.focus();
+			if (options?.focusResults) {
+				resultsRef.current?.focus();
+			}
 		} catch (error) {
 			const message =
 				error instanceof DOMException && error.name === "AbortError"
@@ -271,7 +274,11 @@ export default function PetTravel() {
 
 	function handleSearch(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
-		void fetchPlaces({ page: 1, useLocation: Boolean(location) });
+		void fetchPlaces({
+			page: 1,
+			useLocation: Boolean(location),
+			focusResults: true,
+		});
 	}
 
 	function requestCurrentLocation() {
@@ -304,6 +311,7 @@ export default function PetTravel() {
 	async function fetchPlacesWithLocation(
 		nextLocation: LocationState,
 		radius = search.radius,
+		options?: { focusResults?: boolean },
 	) {
 		setStatus("loading");
 		setErrorMessage(null);
@@ -342,7 +350,9 @@ export default function PetTravel() {
 			if (firstPlace) {
 				void fetchPlaceDetail(firstPlace);
 			}
-			resultsRef.current?.focus();
+			if (options?.focusResults) {
+				resultsRef.current?.focus();
+			}
 		} catch (error) {
 			setStatus("error");
 			setErrorMessage(
@@ -515,7 +525,9 @@ export default function PetTravel() {
 					</Link>
 					<div className="nav-links">
 						<Link to="/">홈</Link>
-						<Link to="/data-sources/kto-pet-tour">데이터 출처</Link>
+						<Link className="optional-nav-link" to="/data-sources/kto-pet-tour">
+							데이터 출처
+						</Link>
 						<a href="#results">결과</a>
 					</div>
 				</nav>
@@ -707,7 +719,11 @@ export default function PetTravel() {
 						<ErrorState
 							message={errorMessage}
 							onRetry={() =>
-								void fetchPlaces({ page: 1, useLocation: Boolean(location) })
+								void fetchPlaces({
+									page: 1,
+									useLocation: Boolean(location),
+									focusResults: true,
+								})
 							}
 						/>
 					) : null}
@@ -715,7 +731,11 @@ export default function PetTravel() {
 						<EmptyState
 							onReset={resetFilters}
 							onRetry={() =>
-								void fetchPlaces({ page: 1, useLocation: Boolean(location) })
+								void fetchPlaces({
+									page: 1,
+									useLocation: Boolean(location),
+									focusResults: true,
+								})
 							}
 						/>
 					) : null}
