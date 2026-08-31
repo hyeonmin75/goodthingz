@@ -1,7 +1,13 @@
 import { Link } from "react-router";
 
 import type { Route } from "./+types/about";
-import { breadcrumbJsonLd, canonicalUrl, socialMeta, webPageJsonLd } from "../seo";
+import {
+	breadcrumbJsonLd,
+	canonicalUrl,
+	PAGE_LAST_MODIFIED,
+	socialMeta,
+	webPageJsonLd,
+} from "../seo";
 
 export function meta({}: Route.MetaArgs) {
 	const title = "GoodThingz 소개 - 무료 공공데이터 생활 서비스";
@@ -16,7 +22,12 @@ export function meta({}: Route.MetaArgs) {
 		{ tagName: "link", rel: "canonical", href: canonicalUrl("/about") },
 		{
 			"script:ld+json": [
-				webPageJsonLd({ name: title, description, path: "/about" }),
+				webPageJsonLd({
+					name: title,
+					description,
+					path: "/about",
+					dateModified: PAGE_LAST_MODIFIED.about,
+				}),
 				breadcrumbJsonLd([
 					{ name: "홈", path: "/" },
 					{ name: "소개", path: "/about" },
@@ -73,6 +84,27 @@ export default function About() {
 				<Link className="button button-primary" to="/pet-travel">
 					반려동물 동반 장소 찾기
 				</Link>
+			</section>
+			<section className="content-section">
+				<h2>운영과 데이터 오류 제보</h2>
+				<p>
+					GoodThingz 운영팀은 공식 데이터의 출처와 한계를 공개하고, 잘못된
+					표시나 개선 제안을 검토합니다. 장소 정보는 제공기관의 원본 데이터에
+					따라 달라질 수 있으므로, 오류 제보에는 장소명과 확인한 내용을 함께
+					남겨 주세요.
+				</p>
+				<a
+					className="text-button"
+					href="https://github.com/hyeonmin75/goodthingz/issues"
+					target="_blank"
+					rel="noreferrer"
+				>
+					데이터 오류와 개선 제안 남기기
+				</a>
+				<p className="muted-copy">
+					공개 제보 공간에는 전화번호, 현재 위치, 인증키 같은 개인정보를 남기지
+					마세요.
+				</p>
 			</section>
 		</main>
 	);

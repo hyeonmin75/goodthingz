@@ -76,8 +76,8 @@ canonical은 중복되거나 비슷한 페이지 중 검색엔진에 대표 URL�
 
 | 페이지 유형 | canonical 정책 |
 | --- | --- |
-| `/` | `https://goodthingz.com/` 자기 자신 |
-| `/pet-travel` | `https://goodthingz.com/pet-travel` 자기 자신 |
+| `/` | `https://goodthingfor.com/` 자기 자신 |
+| `/pet-travel` | `https://goodthingfor.com/pet-travel` 자기 자신 |
 | `/pet-travel/search?...` | canonical은 `/pet-travel`로 지정하고 `noindex`를 함께 적용 |
 | `/pet-travel/places/:contentId` | 자기 자신 canonical은 가능하지만 기본은 `noindex`; sitemap에는 넣지 않음 |
 | `/pet-travel/compare?...` | canonical은 `/pet-travel` 또는 비교 기본 화면으로 지정하고 `noindex` |
@@ -97,7 +97,7 @@ robots.txt는 크롤러가 접근할 URL 범위를 안내하는 파일이다. �
 User-agent: *
 Allow: /
 Disallow: /api/
-Sitemap: https://goodthingz.com/sitemap.xml
+Sitemap: https://goodthingfor.com/sitemap.xml
 ```
 
 `/pet-travel/search`, `/pet-travel/places/:contentId`, `/pet-travel/compare`는 robots.txt로 막지 않고 페이지에서 `noindex,follow`를 적용한다. 이렇게 해야 검색엔진이 페이지를 볼 수는 있지만 색인에는 넣지 않고, 내부 링크 흐름은 이해할 수 있다. API endpoint는 사용자용 페이지가 아니므로 `/api/` 아래에 둔다면 robots.txt에서 차단한다.
@@ -108,11 +108,12 @@ sitemap은 검색엔진에 “색인 후보로 봐야 할 대표 URL 목록”�
 
 초기 sitemap 포함 대상은 다음으로 제한한다.
 
-- `https://goodthingz.com/`
-- `https://goodthingz.com/pet-travel`
-- `https://goodthingz.com/data-sources/kto-pet-tour`
-- `https://goodthingz.com/about`
-- `https://goodthingz.com/privacy`
+- `https://goodthingfor.com/`
+- `https://goodthingfor.com/pet-travel`
+- `https://goodthingfor.com/pet-travel/guides/visit-checklist`
+- `https://goodthingfor.com/data-sources/kto-pet-tour`
+- `https://goodthingfor.com/about`
+- `https://goodthingfor.com/privacy`
 - INDEX 승인된 `/pet-travel/regions/:regionSlug`
 - INDEX 승인된 `/pet-travel/guides/:guideSlug`
 
@@ -178,7 +179,11 @@ structured data는 검색엔진이 페이지 내용을 더 잘 이해하도록 �
 
 이 페이지는 사용자가 “이 정보 믿어도 되나?”를 판단하게 돕는다. 공공데이터 원본보다 추가 가치가 있으려면 API field를 그대로 복사하지 않고, GoodThingz에서 어떤 의미로 바꾸어 쓰는지와 어떤 부분을 추측하지 않는지 설명해야 한다.
 
-### 10.3 조건부 지역 분석 페이지
+### 10.3 출발 전 확인 가이드
+
+`/pet-travel/guides/visit-checklist`은 INDEX 승인된 첫 편집형 가이드다. 이 페이지는 반려동물 동반 장소를 실제로 방문하기 전 주소, 거리, 동반 조건, 준비물, 연락처, 실시간 확인 항목을 어떤 순서로 봐야 하는지 안내한다. 장소·지역·검색어별로 복제하지 않으며, 한국관광공사 원본 데이터로 확인 가능한 정보와 직접 확인해야 하는 정보를 구분한다.
+
+### 10.4 조건부 지역 분석 페이지
 
 지역 분석 페이지는 처음부터 대량 생성하지 않는다. 특정 지역이 충분한 데이터를 가지고 있고, 사용자가 독립적으로 방문해도 판단할 수 있는 분석이 있을 때만 INDEX 후보가 된다.
 

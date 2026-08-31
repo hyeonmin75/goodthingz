@@ -8,6 +8,7 @@ import {
 	DATA_SERVICE,
 	DATA_SPEC_DATE,
 	DATA_UPDATED,
+	PAGE_LAST_MODIFIED,
 	socialMeta,
 	webPageJsonLd,
 } from "../seo";
@@ -37,6 +38,7 @@ export function meta({}: Route.MetaArgs) {
 					name: title,
 					description,
 					path: "/data-sources/kto-pet-tour",
+					dateModified: PAGE_LAST_MODIFIED.dataSource,
 				}),
 				{
 					"@context": "https://schema.org",
@@ -50,7 +52,6 @@ export function meta({}: Route.MetaArgs) {
 					},
 					isAccessibleForFree: true,
 					inLanguage: "ko-KR",
-					temporalCoverage: DATA_SPEC_DATE,
 					variableMeasured: [
 						"장소명",
 						"주소",

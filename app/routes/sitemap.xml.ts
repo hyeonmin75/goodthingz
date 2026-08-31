@@ -1,11 +1,11 @@
-import { canonicalUrl, INDEX_URLS, LAST_SIGNIFICANT_UPDATE } from "../seo";
+import { canonicalUrl, INDEX_PAGES } from "../seo";
 
 export function loader() {
-	const urls = INDEX_URLS.map((path) => {
+	const urls = INDEX_PAGES.map(({ path, lastModified }) => {
 		return [
 			"  <url>",
 			`    <loc>${escapeXml(canonicalUrl(path))}</loc>`,
-			`    <lastmod>${LAST_SIGNIFICANT_UPDATE}</lastmod>`,
+			`    <lastmod>${lastModified}</lastmod>`,
 			"  </url>",
 		].join("\n");
 	}).join("\n");

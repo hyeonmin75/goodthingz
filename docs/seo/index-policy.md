@@ -56,7 +56,8 @@ INDEX가 되려면 다음 조건을 모두 만족해야 한다.
 | 지역별 단순 목록 | `/pet-travel/regions/seoul/list` | DO NOT CREATE | 지역 이름만 바꾼 목록은 API 원본보다 추가 가치가 약하다. | 만들지 않음 |
 | 지역+장소유형 페이지 | `/pet-travel/regions/seoul/food` | DO NOT CREATE | 필터 조합별 페이지에 가까워 대량 생성 위험이 있다. | 만들지 않음 |
 | 키워드 SEO 페이지 | `/pet-travel/keyword/애견카페` | DO NOT CREATE | 검색어만 바꾼 페이지가 되기 쉽고 API 근거가 약하다. | 만들지 않음 |
-| 편집형 가이드 | `/pet-travel/guides/pet-travel-checklist` | 조건부 INDEX | 특정 문제를 해결하는 원본 이상의 설명과 체크 기준이 있으면 가치가 있다. | 데이터 근거, 사용자 판단 기준, 출처 표시 |
+| 출발 전 확인 가이드 | `/pet-travel/guides/visit-checklist` | INDEX | 주소·거리·동반 조건·현장 확인의 순서를 설명해 독립 방문자의 헛걸음 위험을 줄인다. | 데이터 근거, 사용자 판단 기준, 출처·기준일·한계 표시 |
+| 그 밖의 편집형 가이드 | `/pet-travel/guides/:guideSlug` | 조건부 INDEX | 특정 문제를 해결하는 원본 이상의 설명과 체크 기준이 있을 때만 만든다. | 아래 편집형 가이드 승인 기준 충족 |
 | 순위 페이지 | `/pet-travel/best/...` | DO NOT CREATE | 리뷰, 만족도, 예약, 실시간 품질 데이터가 없어 순위 근거가 부족하다. | 만들지 않음 |
 | 실시간 영업 페이지 | `/pet-travel/open-now` | DO NOT CREATE | API에 실시간 영업 정보가 없다. | 만들지 않음 |
 | 예약/가격 페이지 | `/pet-travel/booking`, `/pet-travel/price` | DO NOT CREATE | API에 예약 가능 여부와 가격이 없다. | 만들지 않음 |
@@ -107,13 +108,13 @@ INDEX 가능한 가이드는 다음을 충족해야 한다.
 
 | 페이지 유형 | canonical |
 | --- | --- |
-| 홈 | `https://goodthingz.com/` |
-| 반려동물 여행 검색 시작 | `https://goodthingz.com/pet-travel` |
-| 데이터 출처 | `https://goodthingz.com/data-sources/kto-pet-tour` |
-| 소개 | `https://goodthingz.com/about` |
-| 개인정보 | `https://goodthingz.com/privacy` |
-| 검색 결과 | `https://goodthingz.com/pet-travel` |
-| 비교 | `https://goodthingz.com/pet-travel` 또는 비교 기본 URL |
+| 홈 | `https://goodthingfor.com/` |
+| 반려동물 여행 검색 시작 | `https://goodthingfor.com/pet-travel` |
+| 데이터 출처 | `https://goodthingfor.com/data-sources/kto-pet-tour` |
+| 소개 | `https://goodthingfor.com/about` |
+| 개인정보 | `https://goodthingfor.com/privacy` |
+| 검색 결과 | `https://goodthingfor.com/pet-travel` |
+| 비교 | `https://goodthingfor.com/pet-travel` 또는 비교 기본 URL |
 | 장소 상세 | 자기 자신 가능, 단 sitemap 제외와 `noindex` 유지 |
 | 지역 분석 | 승인된 INDEX 페이지만 자기 자신 |
 | 편집형 가이드 | 승인된 INDEX 페이지만 자기 자신 |
@@ -127,11 +128,12 @@ sitemap에는 INDEX 승인 URL만 들어간다. 동적 검색 결과, 필터 조
 초기 sitemap 후보는 다음이다.
 
 ```text
-https://goodthingz.com/
-https://goodthingz.com/pet-travel
-https://goodthingz.com/data-sources/kto-pet-tour
-https://goodthingz.com/about
-https://goodthingz.com/privacy
+https://goodthingfor.com/
+https://goodthingfor.com/pet-travel
+https://goodthingfor.com/pet-travel/guides/visit-checklist
+https://goodthingfor.com/data-sources/kto-pet-tour
+https://goodthingfor.com/about
+https://goodthingfor.com/privacy
 ```
 
 지역 분석과 편집형 가이드는 `INDEX` 승인 절차를 통과한 URL만 sitemap에 추가한다.

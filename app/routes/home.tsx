@@ -4,6 +4,7 @@ import {
 	canonicalUrl,
 	DATA_PROVIDER,
 	DATA_UPDATED,
+	PAGE_LAST_MODIFIED,
 	SITE_NAME,
 	socialMeta,
 	webPageJsonLd,
@@ -89,6 +90,7 @@ export function meta({}: Route.MetaArgs) {
 					name: title,
 					description,
 					path: "/",
+					dateModified: PAGE_LAST_MODIFIED.home,
 				}),
 				{
 					"@context": "https://schema.org",
@@ -219,6 +221,9 @@ export default function Home({}: Route.ComponentProps) {
 						</p>
 						<Link className="text-button" to="/data-sources/kto-pet-tour">
 							데이터 출처와 한계 보기
+						</Link>
+						<Link className="text-button" to="/pet-travel/guides/visit-checklist">
+							출발 전 확인 가이드
 						</Link>
 					</div>
 				</div>

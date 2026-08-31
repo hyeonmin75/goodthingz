@@ -15,6 +15,8 @@ import {
 	DATA_PROVIDER,
 	DATA_SERVICE,
 	DATA_UPDATED,
+	PAGE_LAST_MODIFIED,
+	SITE_URL,
 	socialMeta,
 	webPageJsonLd,
 } from "../seo";
@@ -97,6 +99,7 @@ export function meta({ data }: Route.MetaArgs) {
 					name: title,
 					description,
 					path: "/pet-travel",
+					dateModified: PAGE_LAST_MODIFIED.petTravel,
 				}),
 				breadcrumbJsonLd([
 					{ name: "홈", path: "/" },
@@ -1507,7 +1510,7 @@ function buildShareText(items: KtoPetTourPlaceSummary[], label: string) {
 		return `${index + 1}. ${item.title} (${item.contentTypeName}) - ${address} - ${distance}`;
 	});
 
-	return [`GoodThingz ${label}`, ...lines, "https://goodthingz.com/pet-travel"].join(
+	return [`GoodThingz ${label}`, ...lines, `${SITE_URL}/pet-travel`].join(
 		"\n",
 	);
 }

@@ -1,12 +1,18 @@
 import { Link } from "react-router";
 
 import type { Route } from "./+types/privacy";
-import { breadcrumbJsonLd, canonicalUrl, socialMeta, webPageJsonLd } from "../seo";
+import {
+	breadcrumbJsonLd,
+	canonicalUrl,
+	PAGE_LAST_MODIFIED,
+	socialMeta,
+	webPageJsonLd,
+} from "../seo";
 
 export function meta({}: Route.MetaArgs) {
 	const title = "개인정보 처리 안내 - GoodThingz";
 	const description =
-		"GoodThingz의 위치 권한, 브라우저 저장, 공유 기능, 공공데이터 API 처리 방식을 설명합니다.";
+		"GoodThingz의 위치 권한, 브라우저 저장, 공유 기능, Google 광고 데이터 처리, 공공데이터 API 처리 방식을 설명합니다.";
 
 	return [
 		{ title },
@@ -16,7 +22,12 @@ export function meta({}: Route.MetaArgs) {
 		{ tagName: "link", rel: "canonical", href: canonicalUrl("/privacy") },
 		{
 			"script:ld+json": [
-				webPageJsonLd({ name: title, description, path: "/privacy" }),
+				webPageJsonLd({
+					name: title,
+					description,
+					path: "/privacy",
+					dateModified: PAGE_LAST_MODIFIED.privacy,
+				}),
 				breadcrumbJsonLd([
 					{ name: "홈", path: "/" },
 					{ name: "개인정보", path: "/privacy" },
@@ -78,6 +89,28 @@ export default function Privacy() {
 					전달합니다. 브라우저가 공유 기능을 지원하지 않으면 클립보드 복사를
 					사용합니다.
 				</p>
+			</section>
+			<section className="content-section">
+				<h2>Google 광고 서비스</h2>
+				<p>
+					GoodThingz는 사이트 연결과 광고 제공을 위해 Google AdSense 코드를
+					사용합니다. 광고가 표시되는 경우 Google과 광고 파트너는 광고 제공,
+					성과 측정, 부정 사용 방지, 광고 개인화 설정을 위해 쿠키, IP 주소,
+					브라우저 또는 기기 식별자 같은 정보를 처리할 수 있습니다.
+				</p>
+				<p>
+					GoodThingz는 이 정보를 자체 계정에 저장하거나 판매하지 않습니다.
+					Google의 광고 데이터 처리와 사용자 설정은 아래 공식 안내에서
+					확인할 수 있습니다.
+				</p>
+				<a
+					className="text-button"
+					href="https://policies.google.com/technologies/ads?hl=ko"
+					target="_blank"
+					rel="noreferrer"
+				>
+					Google 광고 데이터 처리 안내
+				</a>
 			</section>
 			<section className="content-section">
 				<h2>공공데이터 API Key</h2>

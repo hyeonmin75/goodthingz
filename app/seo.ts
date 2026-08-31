@@ -5,15 +5,30 @@ export const DATA_PROVIDER = "한국관광공사";
 export const DATA_SERVICE = "반려동물 동반여행 서비스";
 export const DATA_UPDATED = "일 1회";
 export const DATA_SPEC_DATE = "2026-02-25";
-export const LAST_SIGNIFICANT_UPDATE = "2026-08-31";
 export const DEFAULT_SOCIAL_IMAGE_PATH = "/goodthingz-pet-travel-hero.webp";
 
-export const INDEX_URLS = [
-	"/",
-	"/pet-travel",
-	"/data-sources/kto-pet-tour",
-	"/about",
-	"/privacy",
+export const PAGE_LAST_MODIFIED = {
+	home: "2026-08-31",
+	petTravel: "2026-08-31",
+	visitChecklist: "2026-08-31",
+	dataSource: "2026-08-31",
+	about: "2026-08-31",
+	privacy: "2026-08-31",
+} as const;
+
+export const INDEX_PAGES = [
+	{ path: "/", lastModified: PAGE_LAST_MODIFIED.home },
+	{ path: "/pet-travel", lastModified: PAGE_LAST_MODIFIED.petTravel },
+	{
+		path: "/pet-travel/guides/visit-checklist",
+		lastModified: PAGE_LAST_MODIFIED.visitChecklist,
+	},
+	{
+		path: "/data-sources/kto-pet-tour",
+		lastModified: PAGE_LAST_MODIFIED.dataSource,
+	},
+	{ path: "/about", lastModified: PAGE_LAST_MODIFIED.about },
+	{ path: "/privacy", lastModified: PAGE_LAST_MODIFIED.privacy },
 ] as const;
 
 export function canonicalUrl(path: string) {
@@ -40,6 +55,7 @@ export function webPageJsonLd(input: {
 	name: string;
 	description: string;
 	path: string;
+	dateModified?: string;
 }) {
 	return {
 		"@context": "https://schema.org",
@@ -53,7 +69,7 @@ export function webPageJsonLd(input: {
 			name: SITE_NAME,
 			url: SITE_URL,
 		},
-		dateModified: LAST_SIGNIFICANT_UPDATE,
+		dateModified: input.dateModified,
 	};
 }
 
