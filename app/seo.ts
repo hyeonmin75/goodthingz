@@ -5,7 +5,7 @@ export const DATA_PROVIDER = "한국관광공사";
 export const DATA_SERVICE = "반려동물 동반여행 서비스";
 export const DATA_UPDATED = "일 1회";
 export const DATA_SPEC_DATE = "2026-02-25";
-export const LAST_SIGNIFICANT_UPDATE = "2026-08-27";
+export const LAST_SIGNIFICANT_UPDATE = "2026-08-31";
 export const DEFAULT_SOCIAL_IMAGE_PATH = "/goodthingz-pet-travel-hero.webp";
 
 export const INDEX_URLS = [
