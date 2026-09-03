@@ -145,7 +145,7 @@ export default function Home({}: Route.ComponentProps) {
 						<span>반려동물과 함께 갈 곳</span>
 						<span>확인하고 출발하세요</span>
 					</h1>
-					<p className="lead">동반 조건·거리·지도, 한 화면에서.</p>
+					<p className="lead">반려견 핫플 정보, 지도와 함께 한 화면에서</p>
 					<div className="hero-actions">
 						<Link className="button button-primary" to="/pet-travel">
 							반려동물 여행지 찾기
