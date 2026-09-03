@@ -202,7 +202,7 @@ a {
 
 .home-copy h1 {
 	max-width: 620px;
-	font-size: clamp(42px, 5vw, 76px);
+	font-size: clamp(42px, 5vw, 56px);
 	line-height: 1.06;
 }
 
