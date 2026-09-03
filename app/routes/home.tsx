@@ -142,8 +142,8 @@ export default function Home({}: Route.ComponentProps) {
 				<div className="home-copy">
 					<p className="eyebrow">공식 데이터 기반 반려동물 동반 장소 찾기</p>
 					<h1 id="home-title">
-						<span>반려동물과 갈 곳, </span>
-						<span>확인하고 출발하세요.</span>
+						<span>반려동물과 함께 갈 곳</span>
+						<span>확인하고 출발하세요</span>
 					</h1>
 					<p className="lead">동반 조건·거리·지도, 한 화면에서.</p>
 					<div className="hero-actions">
