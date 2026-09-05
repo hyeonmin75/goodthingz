@@ -155,7 +155,7 @@ export default function PetTravel() {
 	const visibleItems = useMemo(() => {
 		const items = data?.items ?? [];
 		const filtered = items.filter((item) => {
-			if (search.withImagesOnly && !item.media.hasImage) {
+			if (search.withImagesOnly && !hasDisplayableImage(item)) {
 				return false;
 			}
 
@@ -176,7 +176,7 @@ export default function PetTravel() {
 			}
 
 			if (search.sort === "image") {
-				return Number(b.media.hasImage) - Number(a.media.hasImage);
+				return Number(hasDisplayableImage(b)) - Number(hasDisplayableImage(a));
 			}
 
 			return compareNullableNumber(
@@ -291,6 +291,9 @@ export default function PetTravel() {
 	}
 
 	function requestCurrentLocation() {
+		if (!window.confirm(
+			"현재 위치로 주변 장소를 검색하고 지도에 표시할까요?\n\n좌표는 GoodThingz 서버를 거쳐 한국관광공사에 전달되며, 지도 표시 시 OpenStreetMap에도 전달됩니다. 길찾기를 열면 해당 경로 서비스에 출발지와 목적지가 전달됩니다. 광고 타겟팅에는 사용하지 않습니다.\n\n취소해도 장소명 검색은 이용할 수 있습니다.",
+		)) return;
 		setLocationMessage("현재 위치 권한을 확인하는 중입니다.");
 
 		if (!navigator.geolocation) {
@@ -608,6 +611,9 @@ export default function PetTravel() {
 						내 위치 조회
 					</button>
 				</form>
+				<p className="location-disclosure">
+					내 위치는 주변 검색과 지도에 사용하며, 사용 전에 전달 대상을 안내합니다. <Link to="/privacy">위치·개인정보 안내</Link>
+				</p>
 
 				{locationMessage ? (
 					<p className="assistive-message" role="status">
@@ -905,18 +911,29 @@ function PlaceCard({
 	);
 }
 
+function hasDisplayableImage(item: KtoPetTourPlaceSummary) {
+	return Boolean(item.media.thumbnailImageUrl || item.media.primaryImageUrl) &&
+		["Type1", "Type3"].includes(item.media.copyrightType ?? "");
+}
+
 function ImageFrame({ item }: { item: KtoPetTourPlaceSummary }) {
 	if (!item.media.thumbnailImageUrl && !item.media.primaryImageUrl) {
 		return <span className="image-fallback">사진 없음</span>;
 	}
+	if (!["Type1", "Type3"].includes(item.media.copyrightType ?? "")) {
+		return <span className="image-fallback">사진 이용조건 확인 중</span>;
+	}
 
 	return (
+		<span className="licensed-image">
 		<img
 			className="place-image"
 			src={item.media.thumbnailImageUrl ?? item.media.primaryImageUrl ?? ""}
 			alt={`${item.title} 대표 이미지`}
 			loading="lazy"
 		/>
+		<small>한국관광공사 제공 · {item.media.copyrightType === "Type3" ? "출처표시·변경금지" : "출처표시"}</small>
+		</span>
 	);
 }
 
@@ -986,7 +1003,7 @@ function MapPanel({
 						}
 						src={embedUrl}
 						loading="lazy"
-						referrerPolicy="no-referrer-when-downgrade"
+						referrerPolicy="no-referrer"
 					/>
 				) : (
 					<p>좌표가 있는 장소를 선택하면 지도가 표시됩니다.</p>
@@ -1037,7 +1054,9 @@ function DetailPanel({
 	const tel = detail?.contact.tel ?? item.contact.tel;
 	const infoCenter = detail?.contact.infoCenter;
 	const address = detail?.address.full ?? item.address.full;
-	const images = detail?.images ?? [];
+	const images = (detail?.images ?? []).filter((image) =>
+		["Type1", "Type3"].includes(image.copyrightType ?? ""),
+	);
 
 	return (
 		<aside className="detail-panel" aria-labelledby="detail-title">
@@ -1072,12 +1091,15 @@ function DetailPanel({
 					{images.length > 0 ? (
 						<div className="detail-images" aria-label="장소 이미지">
 							{images.slice(0, 3).map((image, index) => (
+								<figure key={`${image.originImageUrl ?? image.thumbnailImageUrl}-${index}`}>
 								<img
 									key={`${image.originImageUrl ?? image.thumbnailImageUrl}-${index}`}
 									src={image.thumbnailImageUrl ?? image.originImageUrl ?? ""}
 									alt={image.name ?? `${item.title} 이미지 ${index + 1}`}
 									loading="lazy"
 								/>
+								<figcaption>한국관광공사 제공 · {image.copyrightType === "Type3" ? "출처표시·변경금지" : "출처표시"}</figcaption>
+								</figure>
 							))}
 						</div>
 					) : null}
@@ -1506,8 +1528,7 @@ function persistSavedPlaces(items: KtoPetTourPlaceSummary[]) {
 function buildShareText(items: KtoPetTourPlaceSummary[], label: string) {
 	const lines = items.map((item, index) => {
 		const address = item.address.full ?? "주소 정보 없음";
-		const distance = formatDistance(item.location.distanceMeters);
-		return `${index + 1}. ${item.title} (${item.contentTypeName}) - ${address} - ${distance}`;
+		return `${index + 1}. ${item.title} (${item.contentTypeName}) - ${address}`;
 	});
 
 	return [`GoodThingz ${label}`, ...lines, `${SITE_URL}/pet-travel`].join(

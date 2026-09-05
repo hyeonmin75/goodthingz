@@ -1,11 +1,9 @@
-const ADSENSE_PLACEHOLDER_CLIENT_ID = "ca-pub-0000000000000000";
 const ADS_TXT_PLACEHOLDER_PUBLISHER_ID = "pub-0000000000000000";
 
 // Google AdSense에서 받은 값으로 아래 2줄만 교체하세요.
 export const ADSENSE_CLIENT_ID: string = "ca-pub-1998974659917167";
 export const ADS_TXT_PUBLISHER_ID: string = "pub-1998974659917167";
-export const ADSENSE_SCRIPT_SRC =
-	"https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1998974659917167";
+// Ad serving is paused. Keep verification and ads.txt; see docs/audit/publisher-policy-review.md.
 
 export function getAdsTxtContent() {
 	if (ADS_TXT_PUBLISHER_ID === ADS_TXT_PLACEHOLDER_PUBLISHER_ID) {

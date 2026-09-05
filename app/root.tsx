@@ -1,6 +1,7 @@
 import {
 	isRouteErrorResponse,
 	Links,
+	Link,
 	Meta,
 	Outlet,
 	Scripts,
@@ -8,7 +9,7 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
-import { ADSENSE_CLIENT_ID, ADSENSE_SCRIPT_SRC } from "./adsense";
+import { ADSENSE_CLIENT_ID } from "./adsense";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
@@ -35,17 +36,21 @@ export function Layout({ children }: { children: React.ReactNode }) {
 			<head>
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
+				<meta name="referrer" content="no-referrer" />
 				<meta name="google-adsense-account" content={ADSENSE_CLIENT_ID} />
 				<Meta />
 				<Links />
-				<script
-					async
-					src={ADSENSE_SCRIPT_SRC}
-					crossOrigin="anonymous"
-				></script>
+				{/* Verification stays available while ad placement and consent are reviewed. */}
 			</head>
 			<body>
 				{children}
+				<footer className="site-footer">
+					<nav aria-label="운영 및 개인정보 안내">
+						<Link to="/about">서비스 소개·오류 제보</Link>
+						<Link to="/privacy">개인정보 처리 안내</Link>
+						<Link to="/data-sources/kto-pet-tour">데이터 출처·이용조건</Link>
+					</nav>
+				</footer>
 				<ScrollRestoration />
 				<Scripts />
 			</body>

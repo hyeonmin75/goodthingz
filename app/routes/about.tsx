@@ -76,6 +76,7 @@ export default function About() {
 			</section>
 			<section className="content-section">
 				<h2>현재 제공 서비스</h2>
+				<p>GoodThingz는 한국관광공사나 Google이 운영하거나 공식 보증하는 사이트가 아닌 독립 서비스입니다. 데이터 제공기관과 사이트 운영자는 다릅니다.</p>
 				<p>
 					첫 서비스는 한국관광공사 반려동물 동반여행 공공데이터를 활용한
 					반려동물 동반 장소 검색입니다. 위치, 장소 유형, 지도, 동반 조건,

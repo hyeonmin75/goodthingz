@@ -28,8 +28,7 @@ export default function NotFound() {
 				<p className="eyebrow">404</p>
 				<h1>페이지를 찾을 수 없습니다.</h1>
 				<p>
-					주소가 바뀌었거나 아직 만들지 않은 페이지입니다. 검색 노출을 위한 빈
-					페이지를 만들지 않는 정책에 따라, 필요한 기능이 있는 화면으로 안내합니다.
+					주소가 잘못되었거나 더 이상 제공하지 않는 페이지입니다. 장소의 동반 조건과 방문 정보는 검색 화면에서 확인할 수 있습니다.
 				</p>
 				<div className="hero-actions">
 					<Link className="button button-primary" to="/pet-travel">

@@ -119,6 +119,11 @@ export default function DataSourceKtoPetTour() {
 				</p>
 			</section>
 			<section className="content-section">
+				<h2>사진 출처와 이용조건</h2>
+				<p>장소 사진은 한국관광공사 반려동물 동반여행 서비스에서 제공한 자료입니다. 이미지별 이용조건이 제1유형(출처표시) 또는 제3유형(출처표시·변경금지)으로 확인된 사진만 표시하며, 사진을 자르거나 변형하지 않고 전체 비율을 유지합니다. 이용조건이 누락되거나 다른 유형인 사진은 확인 전까지 표시하지 않습니다.</p>
+				<a href="https://www.kogl.or.kr/info/userGuide.do" rel="noreferrer" target="_blank">공공누리 이용조건 확인</a>
+			</section>
+			<section className="content-section">
 				<h2>제공하지 않는 정보</h2>
 				<p>
 					실시간 영업 여부, 예약 가능 여부, 현재 가격, 리뷰, 혼잡도는 현재

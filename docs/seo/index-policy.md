@@ -1,5 +1,9 @@
 # GoodThingz Index Policy
 
+## 2026-09-05 구현 상태 보정
+
+검색·비교 기능은 `/pet-travel` 안에서 제공한다. `/pet-travel/search`와 `/pet-travel/compare`는 302로 실제 검색 화면에 연결하고 `X-Robots-Tag: noindex, follow`를 반환한다. `/pet-travel/places/:contentId`의 독립 상세 페이지는 미구현이므로 404/noindex로 응답한다. 아래 장기 설계와 구분하며, 이 주소들은 sitemap에 포함하지 않는다. 광고 실행은 별도 정책 검수에 따라 보류하고 소유 확인용 메타 태그 및 ads.txt를 유지한다. 검색 색인 승인과 광고 게재 승인은 서로 다른 판단이다.
+
 작성일: 2026-08-27
 
 기준 문서:

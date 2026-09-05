@@ -65,7 +65,7 @@ export function meta({}: Route.MetaArgs) {
 			path: "/",
 			imagePath: HERO_IMAGE_PATH,
 			imageAlt:
-				"반려동물과 함께 갈 장소를 조건, 거리, 지도 기준으로 확인하는 GoodThingz 화면",
+								"반려동물 동반 여행을 표현한 AI 제작 소개 이미지",
 		}),
 		{ name: "robots", content: "index,follow" },
 		{ tagName: "link", rel: "canonical", href: canonicalUrl("/") },
@@ -156,6 +156,7 @@ export default function Home({}: Route.ComponentProps) {
 					</div>
 					<p className="hero-source">
 						출처: {DATA_PROVIDER} · 기준: {DATA_UPDATED} 갱신
+						<br />소개 이미지는 AI로 제작했으며 특정 여행지의 실제 사진이 아닙니다.
 					</p>
 				</div>
 			</section>

@@ -1,4 +1,8 @@
-import { Link } from "react-router";
+import { Link, redirect } from "react-router";
+
+export function loader() {
+	return redirect("/pet-travel#results", { status: 302, headers: { "X-Robots-Tag": "noindex, follow" } });
+}
 
 import type { Route } from "./+types/pet-travel-compare";
 import { canonicalUrl, socialMeta } from "../seo";

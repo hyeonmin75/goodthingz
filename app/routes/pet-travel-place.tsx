@@ -1,4 +1,8 @@
-import { Link } from "react-router";
+import { Link, data } from "react-router";
+
+export function loader() {
+	return data(null, { status: 404 });
+}
 
 import type { Route } from "./+types/pet-travel-place";
 import { canonicalUrl, socialMeta } from "../seo";
@@ -39,12 +43,10 @@ export default function PetTravelPlaceNoindex({
 				<span>장소 상세</span>
 			</nav>
 			<section className="content-hero">
-				<p className="eyebrow">NOINDEX</p>
-				<h1>장소 상세는 대량 색인하지 않습니다.</h1>
+				<p className="eyebrow">404</p>
+				<h1>이 주소의 장소 상세 페이지는 제공하지 않습니다.</h1>
 				<p className="lead">
-					장소 ID {params.contentId} 상세는 앱 안에서 확인하고 공유할 수
-					있지만, API 레코드 수만큼 검색 페이지를 만들지 않기 위해 sitemap에
-					넣지 않습니다.
+					장소의 동반 조건과 방문 정보는 검색 화면에서 장소를 선택하면 확인할 수 있습니다.
 				</p>
 				<Link className="button button-primary" to="/pet-travel">
 					검색 화면으로 돌아가기
