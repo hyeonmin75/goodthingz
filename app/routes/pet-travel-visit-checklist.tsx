@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { VisitPlanner } from "../components/visit-planner";
 
 import type { Route } from "./+types/pet-travel-visit-checklist";
 import {
@@ -79,7 +80,7 @@ export function meta({}: Route.MetaArgs) {
 					headline: title,
 					description,
 					inLanguage: "ko-KR",
-					datePublished: PAGE_LAST_MODIFIED.visitChecklist,
+					datePublished: "2026-08-31",
 					dateModified: PAGE_LAST_MODIFIED.visitChecklist,
 					mainEntityOfPage: canonicalUrl(GUIDE_PATH),
 					author: {
@@ -175,6 +176,8 @@ export default function PetTravelVisitChecklist() {
 					</ol>
 				</section>
 
+				<VisitPlanner />
+
 				<section className="content-section" aria-labelledby="guide-source-title">
 					<h2 id="guide-source-title">이 가이드의 데이터 기준</h2>
 					<dl className="policy-list">
@@ -195,7 +198,7 @@ export default function PetTravelVisitChecklist() {
 							<dd>{DATA_SPEC_DATE}</dd>
 						</div>
 						<div>
-							<dt>작성·검토일</dt>
+							<dt>최종 수정일</dt>
 							<dd>{PAGE_LAST_MODIFIED.visitChecklist}</dd>
 						</div>
 					</dl>

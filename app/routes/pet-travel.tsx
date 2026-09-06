@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { Link } from "react-router";
+import { visitEvidence, formatRetrievalTime } from "../visit-evidence";
 
 import type { Route } from "./+types/pet-travel";
 import type {
@@ -71,6 +72,8 @@ export function loader({ request }: Route.LoaderArgs) {
 
 	return {
 		shouldNoindex: url.searchParams.size > 0,
+		initialKeyword: (url.searchParams.get("keyword") ?? "").slice(0, 50),
+		initialContentType: PLACE_TYPES.find((type) => type.value === url.searchParams.get("contentTypeId"))?.value ?? "",
 	};
 }
 
@@ -110,10 +113,10 @@ export function meta({ data }: Route.MetaArgs) {
 	];
 }
 
-export default function PetTravel() {
+export default function PetTravel({ loaderData }: Route.ComponentProps) {
 	const [search, setSearch] = useState<SearchState>({
-		keyword: "",
-		contentTypeId: "",
+		keyword: loaderData.initialKeyword,
+		contentTypeId: loaderData.initialContentType,
 		radius: 5000,
 		withImagesOnly: false,
 		includeNeedsCheck: true,
@@ -159,7 +162,7 @@ export default function PetTravel() {
 				return false;
 			}
 
-			if (!search.includeNeedsCheck && getInfoStatus(item).tone === "warning") {
+			if (!search.includeNeedsCheck && (item.location.latitude === null || item.location.longitude === null || !item.address.full)) {
 				return false;
 			}
 
@@ -464,6 +467,9 @@ export default function PetTravel() {
 	}
 
 	function toggleCompare(item: KtoPetTourPlaceSummary) {
+		if (!compareItems.some((candidate) => candidate.id === item.id)) {
+			void fetchPlaceDetail(item);
+		}
 		setCompareItems((current) => {
 			if (current.some((candidate) => candidate.id === item.id)) {
 				return current.filter((candidate) => candidate.id !== item.id);
@@ -571,12 +577,13 @@ export default function PetTravel() {
 				</section>
 			</header>
 
-			<section className="search-shell" aria-label="검색과 필터">
+			<section id="search-filters" className="search-shell" aria-label="검색과 필터">
 				<form className="search-form" onSubmit={handleSearch}>
 					<label className="input-field">
 						<span>장소명 또는 목적</span>
 						<input
 							type="search"
+							maxLength={50}
 							value={search.keyword}
 							onChange={(event) => updateSearch("keyword", event.target.value)}
 							placeholder="예: 카페, 공원, 숙박"
@@ -664,7 +671,7 @@ export default function PetTravel() {
 								updateSearch("includeNeedsCheck", event.target.checked)
 							}
 						/>
-						<span>확인 필요 포함</span>
+						<span>위치 정보 부족 포함</span>
 					</label>
 
 					<label className="sort-control">
@@ -688,7 +695,7 @@ export default function PetTravel() {
 				</div>
 			</section>
 
-			<div className="mobile-tabs" role="tablist" aria-label="모바일 결과 보기">
+			<div className="mobile-tabs" role="group" aria-label="모바일 결과 보기">
 				<button
 					type="button"
 					className={mobileView === "list" ? "active" : ""}
@@ -707,6 +714,7 @@ export default function PetTravel() {
 				</button>
 			</div>
 
+			{compareItems.length > 0 ? <p className="compare-shortcut" role="status"><a href="#candidate-comparison">선택한 {compareItems.length}곳의 조건 비교 보기</a> · 최대 3곳</p> : null}
 			<section className="workspace" aria-label="검색 결과 작업 영역">
 				<div
 					id="results"
@@ -824,6 +832,8 @@ export default function PetTravel() {
 			{compareItems.length > 0 ? (
 				<CompareTray
 					items={compareItems}
+					detailsById={detailsById}
+					onRetry={(item) => void fetchPlaceDetail(item)}
 					onShare={() => void sharePlaces(compareItems, "내 루트")}
 					onRemove={(id) =>
 						setCompareItems((current) =>
@@ -1057,6 +1067,7 @@ function DetailPanel({
 	const images = (detail?.images ?? []).filter((image) =>
 		["Type1", "Type3"].includes(image.copyrightType ?? ""),
 	);
+	const missingEvidence = detail ? visitEvidence(detail).filter((row) => !row.value) : [];
 
 	return (
 		<aside className="detail-panel" aria-labelledby="detail-title">
@@ -1111,12 +1122,19 @@ function DetailPanel({
 						</section>
 					) : null}
 
+					<section className="evidence-summary" aria-label="추가 확인할 정보">
+						<h3>{missingEvidence.length ? "별도 안내가 표시되지 않은 항목" : "표시된 안내와 내 방문 조건을 대조하세요"}</h3>
+						{missingEvidence.length > 0 ? <p>{missingEvidence.map((row) => row.label).join(" · ")}</p> : null}
+						<p>없는 정보는 허용이나 금지가 아닙니다. 중복 문장은 다른 항목에 통합될 수 있으니 전체 동반 안내도 함께 읽어보세요. 내 동물의 종류·체중·마릿수와 이용 구역은 장소에 최종 확인하세요.</p>
+						<Link className="text-button" to="/pet-travel/guides/visit-checklist#visit-planner">확인할 질문과 준비물 정리</Link>
+					</section>
+
 					<div className="quick-facts" aria-label="핵심 동반 조건">
 						<div>
-							<span>동반 조건</span>
+							<span>동반 안내</span>
 							<strong>
 								{detail.petPolicy.hasPetPolicy
-									? "상세 조건 있음"
+									? "관련 안내 있음"
 									: "공식 데이터 없음"}
 							</strong>
 						</div>
@@ -1182,9 +1200,10 @@ function DetailPanel({
 							<dd>{tel ?? infoCenter ?? "공식 데이터에 연락처 없음"}</dd>
 						</div>
 						<div>
-							<dt>수정일</dt>
+							<dt>원본 수정일</dt>
 							<dd>{formatRawDate(item.dates.modifiedAtRaw)}</dd>
 						</div>
+						<div><dt>자료 조회 시각</dt><dd>{formatRetrievalTime(detail.source.retrievedAt)}</dd></div>
 					</dl>
 
 					<div className="detail-actions">
@@ -1228,9 +1247,9 @@ function DetailPanel({
 					</div>
 
 					<p className="detail-note">
-						실시간 영업, 예약 가능 여부, 가격, 리뷰는 공식 API에서 확인되지
-						않아 표시하지 않습니다. 조건이 중요하면 방문 전 최종 확인이
-						필요합니다.
+						출처: {detail.source.provider}. 운영시간·요금·예약 안내는 원본에 있을 때 표시합니다.
+						오늘 영업 여부·최신 요금·예약 잔여를 실시간 확인한 정보는 아닙니다.
+						조회 시각은 자료를 불러온 때이며 현장 검증일이 아닙니다.
 					</p>
 				</>
 			) : null}
@@ -1309,20 +1328,24 @@ function SavedPlacesPanel({
 
 function CompareTray({
 	items,
+	detailsById,
+	onRetry,
 	onShare,
 	onRemove,
 	onClear,
 }: {
 	items: KtoPetTourPlaceSummary[];
+	detailsById: Record<string, DetailLoadState>;
+	onRetry: (item: KtoPetTourPlaceSummary) => void;
 	onShare: () => void;
 	onRemove: (id: string) => void;
 	onClear: () => void;
 }) {
 	return (
-		<section className="compare-tray" aria-labelledby="compare-title">
+		<section id="candidate-comparison" className="compare-tray" aria-labelledby="compare-title" tabIndex={-1}>
 			<div className="compare-header">
 				<div>
-					<p className="eyebrow">내 루트</p>
+					<p className="eyebrow">방문 후보 비교</p>
 					<h2 id="compare-title">{items.length}곳 선택됨</h2>
 				</div>
 				<div className="saved-actions">
@@ -1336,7 +1359,9 @@ function CompareTray({
 			</div>
 			<div className="compare-grid">
 				{items.map((item) => {
-					const status = getInfoStatus(item);
+					const state = detailsById[item.id];
+					const detail = state?.status === "success" ? state.data : null;
+					const status = getInfoStatus(item, detail);
 					return (
 						<article key={item.id} className="compare-card">
 							<div>
@@ -1356,7 +1381,10 @@ function CompareTray({
 									<dt>상태</dt>
 									<dd>{status.label}</dd>
 								</div>
+								{detail ? visitEvidence(detail).map((row) => <div key={row.label}><dt>{row.label}</dt><dd>{row.value || "별도 안내 없음 · 전체 조건 확인"}</dd></div>) : null}
+								{detail?.petPolicy.policyNotes ? <div><dt>추가 동반 안내</dt><dd>{detail.petPolicy.policyNotes}</dd></div> : null}
 							</dl>
+							{!detail ? <div role="status"><p>{state?.status === "error" ? "상세 안내를 불러오지 못했습니다." : "비교할 상세 안내를 불러오는 중입니다."}</p>{state?.status === "error" ? <button className="text-button" type="button" onClick={() => onRetry(item)}>상세 다시 시도</button> : null}</div> : <p className="compare-source">{detail.source.provider} · 조회 {formatRetrievalTime(detail.source.retrievedAt)}</p>}
 							<button
 								className="text-button"
 								type="button"
@@ -1368,6 +1396,8 @@ function CompareTray({
 					);
 				})}
 			</div>
+			<p className="compare-note">선택한 순서의 후보 목록이며 최적 이동 경로를 계산한 루트가 아닙니다. 중복 문장은 다른 항목에 통합될 수 있습니다. 빈 항목은 입장 허용을 뜻하지 않으며, 안내가 있어도 방문일 조건을 직접 확인하세요.</p>
+			<a className="text-button" href="#search-filters">검색·필터로 돌아가기</a>
 		</section>
 	);
 }
@@ -1449,23 +1479,23 @@ function getInfoStatus(
 ) {
 	if (detail?.petPolicy.hasPetPolicy) {
 		return {
-			label: "동반 조건 확인됨",
-			summary: "동반 가능 동물과 필요사항을 상세 정보에서 확인할 수 있습니다.",
-			tone: "success" as const,
-		};
-	}
-
-	if (item.location.latitude && item.location.longitude && item.address.full) {
-		return {
-			label: "위치 확인됨",
-			summary: "주소와 좌표가 있어 지도에서 위치를 먼저 확인할 수 있습니다.",
+			label: "동반 안내 있음",
+			summary: "원본에 동반 관련 안내가 있습니다. 내 동물의 입장 가능을 확인한 것은 아닙니다.",
 			tone: "neutral" as const,
 		};
 	}
 
+	if (detail) {
+		return {
+			label: "동반 안내 없음",
+			summary: "불러온 원본에 동반 안내가 없습니다. 입장 허용이나 금지로 판단하지 마세요.",
+			tone: "warning" as const,
+		};
+	}
+
 	return {
-		label: "확인 필요",
-		summary: "공식 데이터 일부가 비어 있어 방문 전 추가 확인이 필요합니다.",
+		label: "동반 상세 미확인",
+		summary: `${item.address.full ? "주소가 있어도 동반 조건과는 별개입니다. " : ""}상세 안내를 불러와 확인해야 합니다.`,
 		tone: "warning" as const,
 	};
 }

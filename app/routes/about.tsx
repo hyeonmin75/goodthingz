@@ -87,6 +87,11 @@ export default function About() {
 				</Link>
 			</section>
 			<section className="content-section">
+				<h2>작성·수정 원칙</h2>
+				<p>장소의 주소·동반 안내·방문 정보는 한국관광공사 자료를 정리한 것입니다. 상황별 가이드, 문의 문장과 비교 예시는 GoodThingz가 작성한 판단 보조 자료이며, 직접 방문한 후기나 인기 순위가 아닙니다. 가상 예시는 실제 장소 정보와 구분해 표시합니다.</p>
+				<p>안내가 있다는 사실만으로 입장 가능을 확정하지 않습니다. 빠진 항목은 정보 없음으로 표시하고, 자료를 불러온 시각·원본 수정일·콘텐츠 수정일을 구분합니다. 제공기관의 갱신 주기는 개별 장소의 현장 검증 주기를 뜻하지 않습니다.</p>
+			</section>
+			<section className="content-section">
 				<h2>운영과 데이터 오류 제보</h2>
 				<p>
 					GoodThingz 운영팀은 공식 데이터의 출처와 한계를 공개하고, 잘못된
@@ -104,7 +109,7 @@ export default function About() {
 				</a>
 				<p className="muted-copy">
 					공개 제보 공간에는 전화번호, 현재 위치, 인증키 같은 개인정보를 남기지
-					마세요.
+					마세요. 제보 작성에는 GitHub 로그인이 필요하며, 장소 검색과 비교에는 로그인이 필요하지 않습니다.
 				</p>
 			</section>
 		</main>
