@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { Link } from "react-router";
 import { visitEvidence, formatRetrievalTime } from "../visit-evidence";
+import { loadInitialPlaces } from "../pet-tour.server";
+import { SiteNav } from "../components/site-nav";
 
 import type { Route } from "./+types/pet-travel";
 import type {
@@ -67,13 +69,17 @@ type DetailLoadState =
 	| { status: "success"; data: KtoPetTourPlaceDetail }
 	| { status: "error"; message: string };
 
-export function loader({ request }: Route.LoaderArgs) {
+export async function loader({ request, context }: Route.LoaderArgs) {
 	const url = new URL(request.url);
+	const initialKeyword = (url.searchParams.get("keyword") ?? "").slice(0, 50);
+	const initialContentType = PLACE_TYPES.find((type) => type.value === url.searchParams.get("contentTypeId"))?.value ?? "";
+	const initialData = await loadInitialPlaces(context, initialKeyword, initialContentType);
 
 	return {
-		shouldNoindex: url.searchParams.size > 0,
-		initialKeyword: (url.searchParams.get("keyword") ?? "").slice(0, 50),
-		initialContentType: PLACE_TYPES.find((type) => type.value === url.searchParams.get("contentTypeId"))?.value ?? "",
+		shouldNoindex: url.searchParams.size > 0 || !initialData || initialData.empty,
+		initialKeyword,
+		initialContentType,
+		initialData,
 	};
 }
 
@@ -120,14 +126,14 @@ export default function PetTravel({ loaderData }: Route.ComponentProps) {
 		radius: 5000,
 		withImagesOnly: false,
 		includeNeedsCheck: true,
-		sort: "distance",
+		sort: "latest",
 	});
 	const [location, setLocation] = useState<LocationState | null>(null);
-	const [data, setData] = useState<KtoPetTourPlacesResponse | null>(null);
-	const [status, setStatus] = useState<Status>("idle");
+	const [data, setData] = useState<KtoPetTourPlacesResponse | null>(loaderData.initialData);
+	const [status, setStatus] = useState<Status>(loaderData.initialData ? (loaderData.initialData.empty ? "empty" : "success") : "error");
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [activePlace, setActivePlace] =
-		useState<KtoPetTourPlaceSummary | null>(null);
+		useState<KtoPetTourPlaceSummary | null>(loaderData.initialData?.items[0] ?? null);
 	const [detailsById, setDetailsById] = useState<
 		Record<string, DetailLoadState>
 	>({});
@@ -140,7 +146,8 @@ export default function PetTravel({ loaderData }: Route.ComponentProps) {
 	const resultsRef = useRef<HTMLDivElement | null>(null);
 
 	useEffect(() => {
-		void fetchPlaces({ page: 1 });
+		const first = loaderData.initialData?.items[0];
+		if (first) void fetchPlaceDetail(first);
 	}, []);
 
 	useEffect(() => {
@@ -219,6 +226,7 @@ export default function PetTravel({ loaderData }: Route.ComponentProps) {
 		const params = new URLSearchParams({
 			page: String(options?.page ?? 1),
 			pageSize: String(PAGE_SIZE),
+			arrange: "C",
 		});
 
 		if (search.keyword.trim()) {
@@ -489,9 +497,9 @@ export default function PetTravel({ loaderData }: Route.ComponentProps) {
 			const next = exists
 				? current.filter((candidate) => candidate.id !== item.id)
 				: [item, ...current].slice(0, 12);
-			persistSavedPlaces(next);
+			const stored = persistSavedPlaces(next);
 			setShareMessage(
-				exists ? "저장한 장소에서 제거했습니다." : "선택한 장소를 저장했습니다.",
+				stored ? (exists ? "저장한 장소에서 제거했습니다." : "선택한 장소를 저장했습니다.") : "기기 저장에 실패했습니다. 현재 화면에서만 유지됩니다.",
 			);
 			return next;
 		});
@@ -499,8 +507,8 @@ export default function PetTravel({ loaderData }: Route.ComponentProps) {
 
 	function clearSavedPlaces() {
 		setSavedItems([]);
-		persistSavedPlaces([]);
-		setShareMessage("저장한 장소를 비웠습니다.");
+		const stored = persistSavedPlaces([]);
+		setShareMessage(stored ? "저장한 장소를 비웠습니다." : "화면은 비웠지만 기기 저장을 지우지 못했습니다.");
 	}
 
 	async function sharePlaces(items: KtoPetTourPlaceSummary[], label = "내 루트") {
@@ -534,21 +542,7 @@ export default function PetTravel({ loaderData }: Route.ComponentProps) {
 	return (
 		<main className="service-page">
 			<header className="service-header">
-				<nav className="top-nav" aria-label="주요 메뉴">
-					<Link className="brand" to="/">
-						<span className="brand-mark" aria-hidden="true">
-							G
-						</span>
-						<span>GoodThingz</span>
-					</Link>
-					<div className="nav-links">
-						<Link to="/">홈</Link>
-						<Link className="optional-nav-link" to="/data-sources/kto-pet-tour">
-							데이터 출처
-						</Link>
-						<a href="#results">결과</a>
-					</div>
-				</nav>
+				<SiteNav />
 
 				<nav className="breadcrumb" aria-label="현재 위치">
 					<Link to="/">홈</Link>
@@ -568,12 +562,7 @@ export default function PetTravel({ loaderData }: Route.ComponentProps) {
 							{DATA_UPDATED}
 						</p>
 					</div>
-					<div className="intro-proof" aria-label="서비스가 제공하는 결과">
-						<strong>입력하면 얻는 것</strong>
-						<span>주변 후보</span>
-						<span>동반 조건</span>
-						<span>2~3곳 비교</span>
-					</div>
+					<Link className="text-button" to="/pet-travel/guides">방문 전 확인할 질문</Link>
 				</section>
 			</header>
 
@@ -628,10 +617,10 @@ export default function PetTravel({ loaderData }: Route.ComponentProps) {
 					</p>
 				) : null}
 
-				<div className="filter-row" aria-label="스마트 필터">
+				<div className="filter-row" role="group" aria-label="스마트 필터">
 					<fieldset>
 						<legend>반경</legend>
-						<div className="segmented">
+						<div className="segmented" role="group" aria-label="검색 반경" tabIndex={0}>
 							{RADIUS_OPTIONS.map((option) => (
 								<button
 									key={option.value}
@@ -983,7 +972,7 @@ function MapPanel({
 					내 위치 조회
 				</button>
 			</div>
-			<div className="map-focus-tabs" aria-label="지도 중심 선택">
+			<div className="map-focus-tabs" role="group" aria-label="지도 중심 선택">
 				<button
 					type="button"
 					className={focus === "user" ? "selected" : ""}
@@ -1100,7 +1089,7 @@ function DetailPanel({
 			{detail ? (
 				<>
 					{images.length > 0 ? (
-						<div className="detail-images" aria-label="장소 이미지">
+						<div className="detail-images" role="group" aria-label="장소 이미지">
 							{images.slice(0, 3).map((image, index) => (
 								<figure key={`${image.originImageUrl ?? image.thumbnailImageUrl}-${index}`}>
 								<img
@@ -1129,7 +1118,7 @@ function DetailPanel({
 						<Link className="text-button" to="/pet-travel/guides/visit-checklist#visit-planner">확인할 질문과 준비물 정리</Link>
 					</section>
 
-					<div className="quick-facts" aria-label="핵심 동반 조건">
+					<div className="quick-facts" role="group" aria-label="핵심 동반 조건">
 						<div>
 							<span>동반 안내</span>
 							<strong>
@@ -1306,6 +1295,7 @@ function SavedPlacesPanel({
 					<h2 id="saved-title">{items.length}곳 저장됨</h2>
 				</div>
 				<div className="saved-actions">
+					<Link className="text-button" to="/pet-travel/plan">방문 계획에 담기</Link>
 					<button className="text-button" type="button" onClick={onShare}>
 						공유
 					</button>
@@ -1315,7 +1305,7 @@ function SavedPlacesPanel({
 				</div>
 			</div>
 			<div className="saved-list">
-				{items.slice(0, 6).map((item) => (
+				{items.slice(0, 12).map((item) => (
 					<button key={item.id} type="button" onClick={() => onSelect(item)}>
 						<strong>{item.title}</strong>
 						<span>{item.address.full ?? item.contentTypeName}</span>
@@ -1404,7 +1394,7 @@ function CompareTray({
 
 function LoadingSkeleton() {
 	return (
-		<div className="skeleton-list" aria-label="반려동물 동반여행 데이터 확인 중">
+		<div className="skeleton-list" role="status" aria-label="반려동물 동반여행 데이터 확인 중">
 			{Array.from({ length: 5 }).map((_, index) => (
 				<div className="skeleton-card" key={index}>
 					<span />
@@ -1421,7 +1411,7 @@ function LoadingSkeleton() {
 
 function DetailSkeleton() {
 	return (
-		<div className="detail-skeleton" aria-label="상세 정보 확인 중">
+		<div className="detail-skeleton" role="status" aria-label="상세 정보 확인 중">
 			<i />
 			<i />
 			<i />
@@ -1550,8 +1540,9 @@ function getDirectionsUrl(
 function persistSavedPlaces(items: KtoPetTourPlaceSummary[]) {
 	try {
 		window.localStorage.setItem(SAVED_PLACES_KEY, JSON.stringify(items));
+		return true;
 	} catch {
-		return;
+		return false;
 	}
 }
 

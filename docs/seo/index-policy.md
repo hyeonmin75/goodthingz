@@ -1,5 +1,13 @@
 # GoodThingz Index Policy
 
+## 2026-09-15 콘텐츠 가치 개선
+
+- `/pet-travel/guides`: INDEX 승인. 식사·숙박·체중·다견·우천·입구·준비물·시간·비용·정보 충돌의 서로 다른 판단 문제 10개를 하나의 라이브러리에 통합한다. 각 상황에 확인 순서 3개, 가상 적용 예시, 문의 문장 2개, 원본에서 볼 항목과 한계를 제공한다. 검색 화면의 장소 선택과 달리 방문 조건을 읽고 질문을 준비하는 목적이며, 일반 출발 체크리스트와는 상황별 심층 판단이라는 차이가 있다. 출처·작성 주체·실제 편집일을 공개한다.
+- `/pet-travel/plan`: NOINDEX. 개인 기기에 저장하는 계획·메모·수동 비용 계산 도구이며 검색엔진에 독립 콘텐츠가 없다. 자기 URL canonical, `noindex,follow`, sitemap 제외. 사용자마다 공유 URL을 자동 생성하지 않는다.
+- 가이드 목차는 `#dining` 등 문서 안 이동이며 별도 SEO 페이지가 아니다. sitemap은 승인된 canonical 7개만 유지한다.
+- `/pet-travel`은 실제 첫 장소 목록을 Worker에서 렌더링한다. 검색어·유형 등 query가 붙거나 초기 데이터가 없으면 noindex로 낮춘다. 일시적 API 장애마다 정적 승인 목록을 변경하지는 않으며, 장기 장애 시 해당 URL의 sitemap 승인을 다시 검토한다.
+- 목록만 반복한 소개문은 홈에서 제거하고 실제 후보, 상황별 판단 가이드, 방문 계획으로 연결한다. 광고 게재 승인과 검색 색인 허용은 별개다. 가이드 수·글자 수가 AdSense 승인 기준이라고 주장하지 않는다.
+
 ## 2026-09-05 구현 상태 보정
 
 검색·비교 기능은 `/pet-travel` 안에서 제공한다. `/pet-travel/search`와 `/pet-travel/compare`는 302로 실제 검색 화면에 연결하고 `X-Robots-Tag: noindex, follow`를 반환한다. `/pet-travel/places/:contentId`의 독립 상세 페이지는 미구현이므로 404/noindex로 응답한다. 아래 장기 설계와 구분하며, 이 주소들은 sitemap에 포함하지 않는다. 광고 실행은 별도 정책 검수에 따라 보류하고 소유 확인용 메타 태그 및 ads.txt를 유지한다. 검색 색인 승인과 광고 게재 승인은 서로 다른 판단이다.
@@ -134,6 +142,7 @@ sitemap에는 INDEX 승인 URL만 들어간다. 동적 검색 결과, 필터 조
 ```text
 https://goodthingfor.com/
 https://goodthingfor.com/pet-travel
+https://goodthingfor.com/pet-travel/guides
 https://goodthingfor.com/pet-travel/guides/visit-checklist
 https://goodthingfor.com/data-sources/kto-pet-tour
 https://goodthingfor.com/about

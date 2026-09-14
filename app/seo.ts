@@ -8,17 +8,19 @@ export const DATA_SPEC_DATE = "2026-02-25";
 export const DEFAULT_SOCIAL_IMAGE_PATH = "/goodthingz-pet-travel-hero.webp";
 
 export const PAGE_LAST_MODIFIED = {
-	home: "2026-09-06",
-	petTravel: "2026-09-06",
+	home: "2026-09-15",
+	petTravel: "2026-09-15",
+	guides: "2026-09-15",
 	visitChecklist: "2026-09-06",
 	dataSource: "2026-09-05",
 	about: "2026-09-06",
-	privacy: "2026-09-05",
+	privacy: "2026-09-15",
 } as const;
 
 export const INDEX_PAGES = [
 	{ path: "/", lastModified: PAGE_LAST_MODIFIED.home },
 	{ path: "/pet-travel", lastModified: PAGE_LAST_MODIFIED.petTravel },
+	{ path: "/pet-travel/guides", lastModified: PAGE_LAST_MODIFIED.guides },
 	{
 		path: "/pet-travel/guides/visit-checklist",
 		lastModified: PAGE_LAST_MODIFIED.visitChecklist,

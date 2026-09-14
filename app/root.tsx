@@ -43,9 +43,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				{/* Verification stays available while ad placement and consent are reviewed. */}
 			</head>
 			<body>
+				<a className="skip-link" href="#main-content">본문으로 바로가기</a>
+				<div id="main-content" tabIndex={-1}>
 				{children}
+				</div>
 				<footer className="site-footer">
 					<nav aria-label="운영 및 개인정보 안내">
+						<Link to="/pet-travel/guides">방문 가이드</Link>
+						<Link to="/pet-travel/plan">내 방문 계획</Link>
 						<Link to="/about">서비스 소개·오류 제보</Link>
 						<Link to="/privacy">개인정보 처리 안내</Link>
 						<Link to="/data-sources/kto-pet-tour">데이터 출처·이용조건</Link>

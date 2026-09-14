@@ -11,7 +11,10 @@
 		"nodejs_compat"
 	],
 	"observability": {
-		"enabled": true
+		"enabled": true,
+		"redact_query_string": true,
+		"traces": { "enabled": false },
+		"logs": { "enabled": true, "invocation_logs": false }
 	},
 	"workers_dev": true,
 	"preview_urls": true,

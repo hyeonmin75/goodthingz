@@ -70,8 +70,7 @@ export async function handlePetTourPlacesRequest(request: Request, env: Env) {
 				ok: false,
 				error: {
 					code: result.code,
-					message: result.message,
-					details: result.details,
+					message: "장소 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.",
 				},
 			},
 			result.status,
@@ -127,8 +126,7 @@ export async function handlePetTourPlaceDetailRequest(
 				ok: false,
 				error: {
 					code: result.code,
-					message: result.message,
-					details: result.details,
+					message: "상세 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.",
 				},
 			},
 			result.status,

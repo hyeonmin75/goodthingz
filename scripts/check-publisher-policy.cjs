@@ -5,7 +5,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const base = process.env.AUDIT_BASE_URL || 'http://127.0.0.1:8790';
 
 async function main() {
-  const indexPaths = ['/', '/pet-travel', '/about', '/privacy', '/data-sources/kto-pet-tour', '/pet-travel/guides/visit-checklist'];
+  const indexPaths = ['/', '/pet-travel', '/about', '/privacy', '/data-sources/kto-pet-tour', '/pet-travel/guides/visit-checklist', '/pet-travel/guides'];
   const titles = new Set();
   for (const route of indexPaths) {
     const response = await fetch(base + route);
@@ -24,10 +24,13 @@ async function main() {
     assert.ok(html.includes(`href="https://goodthingfor.com${route}"`), 'Canonical URL');
     for (const match of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) JSON.parse(match[1]);
     if (route === '/') {
-      assert.match(html, /방문 목적별 판단 가이드/);
-      assert.match(html, /가상 후보 A와 B/);
+      assert.match(html, /내 여행에서 놓치기 쉬운 질문/);
+      assert.equal((html.match(/class="home-guide"/g) || []).length, 10);
+      assert.ok((html.match(/class="home-place"/g) || []).length > 0, 'Real candidates in SSR HTML');
       assert.doesNotMatch(html, /반려견 핫플/);
     }
+    if (route === '/pet-travel') assert.ok((html.match(/class="place-card[ "]/g) || []).length > 0, 'Search results in SSR HTML');
+    if (route === '/pet-travel/guides') assert.equal((html.match(/class="decision-article"/g) || []).length, 10);
     if (route.endsWith('visit-checklist')) {
       assert.match(html, /방문 전 확인 항목/);
       assert.match(html, /"datePublished":"2026-08-31"/);
@@ -45,9 +48,10 @@ async function main() {
     assert.match(await response.text(), /noindex,follow/);
   }
   assert.match(await (await fetch(base + '/pet-travel?keyword=test')).text(), /noindex,follow/);
+  assert.match(await (await fetch(base + '/pet-travel/plan')).text(), /noindex,follow/);
   const sitemap = await (await fetch(base + '/sitemap.xml')).text();
   assert.equal((sitemap.match(/<loc>/g) || []).length, indexPaths.length);
-  assert.doesNotMatch(sitemap, /\/search|\/compare|\/places\//);
+  assert.doesNotMatch(sitemap, /\/search|\/compare|\/places\/|\/plan</);
   assert.equal((await (await fetch(base + '/ads.txt')).text()).trim(), 'google.com, pub-1998974659917167, DIRECT, f08c47fec0942fa0');
   const robots = await (await fetch(base + '/robots.txt')).text();
   assert.match(robots, /Allow: \/\n/);
@@ -66,6 +70,15 @@ async function main() {
   assert.doesNotMatch(JSON.stringify(realDetail), /PUBLIC_DATA_API_KEY|serviceKey/i);
   assert.doesNotMatch(JSON.stringify(payload), /PUBLIC_DATA_API_KEY|serviceKey/i);
   assert.equal((await fetch(base + '/api/public-data/pet-tour/places?page=-1')).status, 400);
+  assert.equal((await fetch(base + '/api/public-data/pet-tour/places', { method: 'POST' })).status, 405);
+  assert.equal((await fetch(base + '/api/public-data/pet-tour/places?latitude=999&longitude=126')).status, 400);
+  const pageTwo = await (await fetch(base + '/api/public-data/pet-tour/places?page=2&pageSize=3')).json();
+  assert.equal(pageTwo.ok, true);
+  assert.equal(pageTwo.data.pagination.page, 2);
+  const nearby = await (await fetch(base + '/api/public-data/pet-tour/places?latitude=37.5665&longitude=126.978&radius=1000&pageSize=3')).json();
+  assert.equal(nearby.ok, true);
+  assert.equal(nearby.data.source.operation, 'locationBasedList2');
+  for (const place of nearby.data.items) assert.ok(place.location.distanceMeters === null || place.location.distanceMeters <= 1000);
   const browser = await chromium.launch({ headless: true, channel: process.env.AUDIT_BROWSER_CHANNEL || undefined });
   const reports = [];
   const screenshots = path.resolve('.wrangler/policy-audit');
@@ -91,7 +104,7 @@ async function main() {
       await page.route('**/api/public-data/pet-tour/places?**', route => route.fulfill({ json: payload }));
       await page.route('**/api/public-data/pet-tour/place?**', route => route.fulfill({ status: 503, json: { ok: false, error: { message: 'Test detail unavailable' } } }));
       await page.route('https://www.openstreetmap.org/**', route => route.fulfill({ contentType: 'text/html', body: '<p>Test map</p>' }));
-      for (const route of ['/', '/privacy', '/about', '/data-sources/kto-pet-tour', '/pet-travel/guides/visit-checklist', '/pet-travel']) {
+      for (const route of ['/', '/privacy', '/about', '/data-sources/kto-pet-tour', '/pet-travel/guides/visit-checklist', '/pet-travel/guides', '/pet-travel/plan', '/pet-travel']) {
         await page.goto(base + route);
         await page.locator('footer').waitFor();
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${width} ${route} overflow`);
@@ -112,6 +125,11 @@ async function main() {
       await locationRequest;
       assert.equal(await page.evaluate(() => window.__locationCalls), 1);
       assert.ok(await page.getByRole('button', { name: '1km', exact: true }).isEnabled());
+      const mapSource = await page.locator('iframe').first().getAttribute('src');
+      assert.match(decodeURIComponent(mapSource), /marker=37.5665,126.978/);
+      const radiusRequest = page.waitForRequest(r => new URL(r.url()).searchParams.get('radius') === '1000');
+      await page.getByRole('button', { name: '1km', exact: true }).click();
+      await radiusRequest;
       if (width < 768) await page.getByRole('button', { name: '목록', exact: true }).click();
       await page.locator('.place-card').first().getByRole('button', { name: '저장', exact: true }).click();
       if (width < 768) await page.getByRole('button', { name: '지도와 상세', exact: true }).click();
@@ -125,19 +143,15 @@ async function main() {
       await page.waitForURL('**/privacy');
       assert.ok(await page.getByRole('heading', { name: '위치 권한', exact: true }).isVisible());
       await page.goto(base + '/');
-      assert.equal(await page.locator('.scenario-card').count(), 3);
-      assert.equal(await page.locator('.answer-list details').count(), 4);
-      await page.locator('.answer-list summary').first().focus();
-      await page.keyboard.press('Enter');
-      assert.ok(await page.locator('.answer-list details').first().getAttribute('open') !== null);
+      assert.equal(await page.locator('.home-guide').count(), 10);
       await page.getByLabel('어떤 장소를 찾으세요?').fill('강릉');
-      const keywordRequest = page.waitForRequest(request => new URL(request.url()).searchParams.get('keyword') === '강릉' && request.url().includes('/api/'));
       await page.getByRole('button', { name: '검색', exact: true }).click();
-      await keywordRequest;
-      await page.goto(base + '/');
-      const typeRequest = page.waitForRequest(request => new URL(request.url()).searchParams.get('contentTypeId') === '32' && request.url().includes('/places?'));
-      await page.getByRole('link', { name: '숙박 후보 찾기', exact: true }).click();
-      await typeRequest;
+      await page.waitForURL(url => url.pathname === '/pet-travel' && url.searchParams.get('keyword') === '강릉');
+      assert.equal(await page.getByLabel('장소명 또는 목적', { exact: true }).inputValue(), '강릉');
+      await page.goto(base + '/pet-travel/guides#overnight');
+      await page.locator('#overnight').getByRole('link', { name: '숙박 후보 찾기' }).click();
+      await page.waitForURL('**/pet-travel?contentTypeId=32');
+      assert.equal(await page.locator('.search-form select').inputValue(), '32');
       await page.goto(base + '/pet-travel/guides/visit-checklist');
       const planner = page.locator('#visit-planner');
       await planner.getByRole('checkbox').first().check();
@@ -181,11 +195,16 @@ async function main() {
       assert.ok(await comparisonTitle.evaluate(element => { const r = element.getBoundingClientRect(); return element.contains(document.elementFromPoint(r.left + 5, r.top + r.height / 2)); }), 'Comparison heading is not obscured');
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Comparison overflow');
       await page.locator('.compare-tray').screenshot({ path: path.join(screenshots, `${width}-comparison.png`) });
-      await page.route('**/api/public-data/pet-tour/places?**', route => route.fulfill({ json: { ok: true, data: { ...payload.data, empty: true, items: [], pagination: { ...payload.data.pagination, totalCount: 0, hasNextPage: false } } } }));
+      await page.route('**/api/public-data/pet-tour/places?**', async route => {
+        await new Promise(resolve => setTimeout(resolve, 800));
+        return route.fulfill({ json: { ok: true, data: { ...payload.data, empty: true, items: [], pagination: { ...payload.data.pagination, totalCount: 0, hasNextPage: false } } } });
+      });
       await page.goto(base + '/pet-travel');
+      await page.getByRole('button', { name: '검색', exact: true }).click();
+      await page.locator('.skeleton-list').waitFor();
       await page.getByRole('heading', { name: '조건에 맞는 후보를 찾지 못했습니다.' }).waitFor();
       await page.route('**/api/public-data/pet-tour/places?**', route => route.fulfill({ status: 503, json: { ok: false, error: { message: 'Test API unavailable' } } }));
-      await page.reload();
+      await page.getByRole('button', { name: '다시 검색', exact: true }).click();
       await page.getByRole('heading', { name: '공공데이터를 불러오지 못했습니다.' }).waitFor();
       assert.equal(requests.some(url => /pagead2|doubleclick/.test(url)), false);
       assert.deepEqual(errors, []);
