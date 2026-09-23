@@ -8,6 +8,7 @@ async function main() {
   try {
     for (const width of [360, 1280]) {
       const page = await browser.newPage({ viewport: { width, height: 844 } });
+      await page.route('https://pagead2.googlesyndication.com/**', r => r.fulfill({ contentType: 'application/javascript', body: '' }));
       await page.route('https://www.openstreetmap.org/**', r => r.fulfill({ contentType: 'text/html', body: '<html lang="ko"><title>시험 지도</title><body><main>시험 지도</main></body></html>' }));
       for (const route of ['/', '/pet-travel', '/pet-travel/guides', '/pet-travel/plan', '/privacy', '/about', '/data-sources/kto-pet-tour', '/pet-travel/guides/visit-checklist']) {
         await page.goto(base + route);

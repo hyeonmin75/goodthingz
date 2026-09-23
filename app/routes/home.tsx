@@ -127,7 +127,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             </div>
           </form>
           <div className="hero-actions">
-            <Link className="button button-secondary" to="/pet-travel">
+            <Link reloadDocument className="button button-secondary" to="/pet-travel">
               지도에서 후보 찾기
             </Link>
           </div>
@@ -145,7 +145,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             <p className="eyebrow">장소 탐색</p>
             <h2 id="candidate-title">어디를 살펴볼까요?</h2>
           </div>
-          <Link className="text-button" to="/pet-travel">
+          <Link reloadDocument className="text-button" to="/pet-travel">
             전체 후보 찾기
           </Link>
         </div>
@@ -214,7 +214,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               현재 장소 자료를 불러오지 못했습니다. 아래 가이드에서 방문 조건을
               먼저 정리하거나 검색에서 다시 시도하세요.
             </p>
-            <Link className="text-button" to="/pet-travel">
+            <Link reloadDocument className="text-button" to="/pet-travel">
               장소 검색 다시 시도
             </Link>
           </div>
@@ -229,13 +229,14 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             <p className="eyebrow">상황별 판단 가이드</p>
             <h2 id="home-guides-title">내 여행에서 놓치기 쉬운 질문</h2>
           </div>
-          <Link className="text-button" to={GUIDE_PATH}>
+          <Link reloadDocument className="text-button" to={GUIDE_PATH}>
             가이드 전체 보기
           </Link>
         </div>
         <div className="home-guide-grid">
           {TRAVEL_GUIDES.map((guide, index) => (
             <Link
+              reloadDocument
               className="home-guide"
               to={`${GUIDE_PATH}#${guide.id}`}
               key={guide.id}
@@ -267,10 +268,11 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           </p>
         </div>
         <div className="hero-actions">
-          <Link className="button button-primary" to="/pet-travel/plan">
+          <Link reloadDocument className="button button-primary" to="/pet-travel/plan">
             내 방문 계획
           </Link>
           <Link
+            reloadDocument
             className="button button-secondary"
             to="/pet-travel/guides/visit-checklist"
           >
@@ -287,9 +289,9 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           않습니다. 이 사이트의 글은 현장 방문 후기나 입장 보증이 아닙니다.
         </p>
         <div className="source-links">
-          <Link to="/data-sources/kto-pet-tour">데이터 출처와 한계</Link>
-          <Link to="/about">작성 원칙·오류 제보</Link>
-          <Link to="/privacy">개인정보와 저장 자료</Link>
+          <Link reloadDocument to="/data-sources/kto-pet-tour">데이터 출처와 한계</Link>
+          <Link reloadDocument to="/about">작성 원칙·오류 제보</Link>
+          <Link reloadDocument to="/privacy">개인정보와 저장 자료</Link>
         </div>
       </section>
     </main>

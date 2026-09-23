@@ -50,6 +50,7 @@
     "test:publisher": "node scripts/check-publisher-policy.cjs",
     "test:plan": "node --experimental-strip-types scripts/check-visit-plan.cjs",
     "test:a11y": "node scripts/check-accessibility.cjs",
+    "test:adsense": "node scripts/check-adsense.cjs",
     "test:private": "node scripts/check-private-files.cjs"
   },
   "type": "module"

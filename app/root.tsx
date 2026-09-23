@@ -6,10 +6,12 @@ import {
 	Outlet,
 	Scripts,
 	ScrollRestoration,
+	useLocation,
+	useRouteError,
 } from "react-router";
 
 import type { Route } from "./+types/root";
-import { ADSENSE_CLIENT_ID } from "./adsense";
+import { ADSENSE_CLIENT_ID, ADSENSE_SCRIPT_URL, shouldLoadAdsenseCode } from "./adsense";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
@@ -31,6 +33,9 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+	const { pathname, search } = useLocation();
+	const error = useRouteError();
+	const loadAdsenseCode = !error && shouldLoadAdsenseCode(pathname, search);
 	return (
 		<html lang="ko-KR">
 			<head>
@@ -40,7 +45,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<meta name="google-adsense-account" content={ADSENSE_CLIENT_ID} />
 				<Meta />
 				<Links />
-				{/* Verification stays available while ad placement and consent are reviewed. */}
+				{loadAdsenseCode ? <script async src={ADSENSE_SCRIPT_URL} crossOrigin="anonymous" /> : null}
 			</head>
 			<body>
 				<a className="skip-link" href="#main-content">본문으로 바로가기</a>
@@ -49,11 +54,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				</div>
 				<footer className="site-footer">
 					<nav aria-label="운영 및 개인정보 안내">
-						<Link to="/pet-travel/guides">방문 가이드</Link>
-						<Link to="/pet-travel/plan">내 방문 계획</Link>
-						<Link to="/about">서비스 소개·오류 제보</Link>
-						<Link to="/privacy">개인정보 처리 안내</Link>
-						<Link to="/data-sources/kto-pet-tour">데이터 출처·이용조건</Link>
+						<Link reloadDocument={loadAdsenseCode} to="/pet-travel/guides">방문 가이드</Link>
+						<Link reloadDocument={loadAdsenseCode} to="/pet-travel/plan">내 방문 계획</Link>
+						<Link reloadDocument={loadAdsenseCode} to="/about">서비스 소개·오류 제보</Link>
+						<Link reloadDocument={loadAdsenseCode} to="/privacy">개인정보 처리 안내</Link>
+						<Link reloadDocument={loadAdsenseCode} to="/data-sources/kto-pet-tour">데이터 출처·이용조건</Link>
 					</nav>
 				</footer>
 				<ScrollRestoration />

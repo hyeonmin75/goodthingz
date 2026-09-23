@@ -14,7 +14,7 @@ export const PAGE_LAST_MODIFIED = {
 	visitChecklist: "2026-09-06",
 	dataSource: "2026-09-05",
 	about: "2026-09-06",
-	privacy: "2026-09-15",
+	privacy: "2026-09-23",
 } as const;
 
 export const INDEX_PAGES = [

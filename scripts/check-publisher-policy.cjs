@@ -14,7 +14,8 @@ async function main() {
     assert.equal((html.match(/<h1[ >]/g) || []).length, 1, route);
     assert.match(html, /google-adsense-account/);
     assert.match(html, /href="\/privacy"/);
-    assert.doesNotMatch(html, /<script[^>]+src="https:\/\/pagead2/);
+    if (route === '/') assert.match(html.split('</head>')[0], /<script[^>]+src="https:\/\/pagead2/);
+    else assert.doesNotMatch(html, /<script[^>]+src="https:\/\/pagead2/);
     assert.match(html, /rel="canonical"/);
     assert.match(html, /name="description" content="[^"]+"/);
     assert.match(html, /property="og:title"/);
@@ -86,6 +87,8 @@ async function main() {
   try {
     for (const width of [360, 390, 1280]) {
       const context = await browser.newContext({ viewport: { width, height: 844 } });
+      // Do not generate real ad requests during automated UI tests.
+      await context.route('https://pagead2.googlesyndication.com/**', r => r.fulfill({ contentType: 'application/javascript', body: '' }));
       // Synthetic position only. No device location or live location request is used.
       await context.addInitScript(() => {
         window.__locationCalls = 0;
@@ -206,7 +209,7 @@ async function main() {
       await page.route('**/api/public-data/pet-tour/places?**', route => route.fulfill({ status: 503, json: { ok: false, error: { message: 'Test API unavailable' } } }));
       await page.getByRole('button', { name: '다시 검색', exact: true }).click();
       await page.getByRole('heading', { name: '공공데이터를 불러오지 못했습니다.' }).waitFor();
-      assert.equal(requests.some(url => /pagead2|doubleclick/.test(url)), false);
+      assert.equal(requests.some(url => /doubleclick/.test(url)), false);
       assert.deepEqual(errors, []);
       reports.push({ width, overflow: false, consentCancel: 'PASS', consentAccept: 'PASS', sharing: 'PASS', keyboardPrivacyLink: 'PASS', emptyAndError: 'PASS', homeSearchAndType: 'PASS', checklistAndCopy: 'PASS', missingEvidenceAndComparison: 'PASS', runtimeErrors: errors.length });
       await context.close();
