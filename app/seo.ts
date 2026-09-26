@@ -5,7 +5,7 @@ export const DATA_PROVIDER = "한국관광공사";
 export const DATA_SERVICE = "반려동물 동반여행 서비스";
 export const DATA_UPDATED = "일 1회";
 export const DATA_SPEC_DATE = "2026-02-25";
-export const DEFAULT_SOCIAL_IMAGE_PATH = "/goodthingz-pet-travel-hero.webp";
+export const DEFAULT_SOCIAL_IMAGE_PATH = "/illustrations/pet-travel-studio-1536.webp";
 
 export const PAGE_LAST_MODIFIED = {
 	home: "2026-09-26",
@@ -15,7 +15,7 @@ export const PAGE_LAST_MODIFIED = {
 	visitChecklist: "2026-09-26",
 	dataSource: "2026-09-26",
 	about: "2026-09-26",
-	privacy: "2026-09-23",
+	privacy: "2026-09-26",
 } as const;
 
 export const INDEX_PAGES = [
@@ -88,7 +88,7 @@ export function socialMeta(input: {
 	const imageUrl = canonicalUrl(imagePath);
 	const imageAlt =
 		input.imageAlt ??
-		"GoodThingz 반려동물 동반 장소 검색 서비스 대표 이미지";
+		"GoodThingz 반려동물 여행 준비를 표현한 AI 제작 일러스트";
 
 	return [
 		{ property: "og:site_name", content: SITE_NAME },

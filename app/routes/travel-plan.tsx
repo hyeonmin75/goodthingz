@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowUp, ArrowDown, Trash2, Download, Printer, Save } from "lucide-react";
-import { Link } from "react-router";
+import { Link, useBlocker } from "react-router";
 import type { Route } from "./+types/travel-plan";
 import { SiteNav } from "../components/site-nav";
+import { PlanReviewBoard } from "../components/plan-review-board";
 import { canonicalUrl, socialMeta } from "../seo";
 import {
   CHECK_FIELDS,
@@ -41,13 +42,27 @@ export default function TravelPlan() {
   const [includeDate, setIncludeDate] = useState(false);
   const [showShare, setShowShare] = useState(false);
   const [customName, setCustomName] = useState("");
+  const [savedVersion, setSavedVersion] = useState(() => JSON.stringify(emptyPlan()));
+  const isDirty = ready && JSON.stringify(plan) !== savedVersion;
+  const blocker = useBlocker(({ currentLocation, nextLocation }) => isDirty && currentLocation.pathname !== nextLocation.pathname);
   const importRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (blocker.state !== "blocked") return;
+    if (window.confirm("저장하지 않은 변경이 있습니다. 저장하지 않고 이동할까요?")) blocker.proceed();
+    else blocker.reset();
+  }, [blocker]);
+  useEffect(() => {
+    if (!isDirty) return;
+    const warn = (event: BeforeUnloadEvent) => { event.preventDefault(); event.returnValue = ""; };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [isDirty]);
   useEffect(() => {
     try {
       const raw = localStorage.getItem(PLAN_KEY);
       if (raw) {
         const parsed = parsePlan(JSON.parse(raw));
-        if (parsed) setPlan(parsed);
+        if (parsed) { setPlan(parsed); setSavedVersion(JSON.stringify(parsed)); }
         else
           setMessage(
             "저장된 계획 형식을 읽을 수 없습니다. 새 계획을 작성할 수 있습니다.",
@@ -115,6 +130,7 @@ export default function TravelPlan() {
   function save() {
     try {
       localStorage.setItem(PLAN_KEY, JSON.stringify(plan));
+      setSavedVersion(JSON.stringify(plan));
       setMessage(
         "이 기기에 계획을 저장했습니다. 다른 기기로 자동 전송되지 않습니다.",
       );
@@ -170,6 +186,7 @@ export default function TravelPlan() {
     setPlan(emptyPlan());
     try {
       localStorage.removeItem(PLAN_KEY);
+      setSavedVersion(JSON.stringify(emptyPlan()));
       setMessage("계획을 삭제했습니다.");
     } catch {
       setMessage(
@@ -201,17 +218,16 @@ export default function TravelPlan() {
     <main className="plan-page">
       <SiteNav />
       <header className="library-intro">
-        <p className="eyebrow">MY VISIT PLAN</p>
+        <p className="eyebrow">GOODTHINGZ 여행 준비</p>
         <h1>내 방문 계획</h1>
-        <p className="lead">후보를 고르고, 확인한 조건을 남기세요.</p>
+        <p className="lead">찾은 후보를, 출발할 계획으로.</p>
         <p>
-          체크는 사용자가 확인한 기록입니다. 입장 보증이나 자동 경로 추천이
-          아닙니다. 저장 버튼을 눌러야 다음 방문에 이어 쓸 수 있으며, 메모에
-          연락처·주소·민감한 자료를 적지 마세요.
+          체크는 사용자가 확인한 기록이며 입장 보증이 아닙니다. 개인정보는 메모에 적지 마세요.
         </p>
       </header>
+      <nav className="plan-jumps" aria-label="계획 작업 이동"><a href="#plan-review">확인 현황</a><a href="#stops-title">후보 편집</a><a href="#plan-candidates">후보 추가</a><a href="#budget-title">방문 비용</a></nav>
       <div className="plan-layout">
-        <aside className="plan-sidebar">
+        <aside className="plan-sidebar" id="plan-candidates">
           <h2>후보 추가</h2>
           <p>장소 검색에서 저장한 후보</p>
           {saved.length ? (
@@ -305,9 +321,14 @@ export default function TravelPlan() {
           <p role="status" className="plan-status">
             {message ||
               (ready
-                ? "변경 후 저장 버튼을 눌러 보관하세요."
+                ? ""
                 : "기기에 저장한 계획을 읽고 있습니다.")}
           </p>
+          <p className={`plan-save-state${isDirty ? " unsaved" : ""}`} role="status">{!ready ? "저장 상태 확인 중" : isDirty ? "저장하지 않은 변경이 있습니다." : "저장하지 않은 변경 없음"}</p>
+          <PlanReviewBoard plan={plan} onReview={(stop, field) => {
+            const target = document.getElementById(`stop-check-${stop}-${field}`);
+            target?.scrollIntoView({ block: "center" }); target?.focus({ preventScroll: true });
+          }} />
           {showShare ? (
             <section className="share-preview">
               <h2>공유할 내용</h2>
@@ -395,6 +416,7 @@ export default function TravelPlan() {
                       <label key={label}>
                         <span>{label}</span>
                         <select
+                          id={`stop-check-${index}-${n}`}
                           value={stop.checks[n]}
                           onChange={(e) =>
                             updateStop(stop.id, {

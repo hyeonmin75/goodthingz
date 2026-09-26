@@ -1,6 +1,6 @@
 import type { Route } from "./+types/home";
 import { Link } from "react-router";
-import { ArrowRight, BookOpen, Coffee, BedDouble, Trees } from "lucide-react";
+import { ArrowRight, BookOpen, Coffee, BedDouble, Trees, Search, ListChecks } from "lucide-react";
 import { SiteNav } from "../components/site-nav";
 import { TRAVEL_GUIDES, GUIDE_PATH } from "../content/travel-guides";
 import { loadInitialPlaces } from "../pet-tour.server";
@@ -16,14 +16,16 @@ import {
   webPageJsonLd,
 } from "../seo";
 
-const HERO_IMAGE_PATH = "/goodthingz-pet-travel-hero.webp";
-const HERO_IMAGE_FALLBACK_PATH = "/goodthingz-pet-travel-hero.png";
+const HERO_IMAGE_PATH = "/illustrations/pet-travel-studio-1536.webp";
+const HERO_MOBILE_IMAGE_PATH = "/illustrations/pet-travel-studio-768.webp";
 
 export const links: Route.LinksFunction = () => [
   {
     rel: "preload",
     as: "image",
     href: HERO_IMAGE_PATH,
+    imageSrcSet: `${HERO_MOBILE_IMAGE_PATH} 768w, ${HERO_IMAGE_PATH} 1536w`,
+    imageSizes: "(max-width: 640px) 100vw, 780px",
   },
 ];
 
@@ -94,11 +96,15 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
       <section className="home-hero" aria-labelledby="home-title">
         <picture>
-          <source srcSet={HERO_IMAGE_PATH} type="image/webp" />
           <img
             className="home-hero-image"
-            src={HERO_IMAGE_FALLBACK_PATH}
-            alt="반려동물과 함께 갈 장소를 지도와 조건으로 확인하는 장면"
+            src={HERO_IMAGE_PATH}
+            srcSet={`${HERO_MOBILE_IMAGE_PATH} 768w, ${HERO_IMAGE_PATH} 1536w`}
+            sizes="(max-width: 640px) 100vw, 780px"
+            width={1536}
+            height={1024}
+            fetchPriority="high"
+            alt="이동장과 물그릇을 준비한 반려견의 여행을 그린 AI 제작 일러스트"
           />
         </picture>
         <div className="home-copy">
@@ -115,7 +121,8 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             role="search"
           >
             <label htmlFor="home-keyword">어떤 장소를 찾으세요?</label>
-            <div>
+            <div className="home-search-fields">
+              <label className="home-type"><span className="sr-only">장소 유형</span><select aria-label="장소 유형" name="contentTypeId" defaultValue=""><option value="">전체 유형</option><option value="39">음식점</option><option value="32">숙박</option><option value="12">관광지</option><option value="14">문화시설</option></select></label>
               <input
                 id="home-keyword"
                 name="keyword"
@@ -124,7 +131,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                 placeholder="장소명이나 검색어"
               />
               <button className="button button-primary" type="submit">
-                검색
+                <Search size={18} aria-hidden="true" /><span>검색</span>
               </button>
             </div>
           </form>
@@ -132,6 +139,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             <Link reloadDocument className="button button-secondary" to="/pet-travel">
               지도에서 후보 찾기
             </Link>
+            <Link reloadDocument className="text-button" to="/pet-travel/plan"><ListChecks size={18} aria-hidden="true" /> 내 준비 보드</Link>
           </div>
           <p className="hero-source">
             소개 이미지: AI 제작 · 특정 장소의 실제 사진이 아닙니다.
@@ -276,16 +284,15 @@ export default function Home({ loaderData }: Route.ComponentProps) {
       >
         <div>
           <p className="eyebrow">결정한 내용은 한곳에</p>
-          <h2 id="home-plan-title">확인한 후보로 방문 계획 만들기</h2>
+          <h2 id="home-plan-title">아직 확인하지 못한 조건이 있나요?</h2>
           <p>
             우리 반려동물의 조건, 방문일 운영, 요금 중 아직 모르는 항목을
-            남겨두세요. 확인한 금액만 합산하고, 동행자에게는 장소와 확인 상태만
-            전달할 수 있습니다.
+            남겨두세요. 조건 불일치와 미확인 항목부터 정리하고, 동행자와 같은 비교표로 결정하세요.
           </p>
         </div>
         <div className="hero-actions">
           <Link reloadDocument className="button button-primary" to="/pet-travel/plan">
-            내 방문 계획
+            <ListChecks size={18} aria-hidden="true" /> 내 준비 보드 열기
           </Link>
           <Link
             reloadDocument

@@ -7,6 +7,9 @@ export const CHECK_FIELDS = [
   "요금·주차",
 ] as const;
 export type CheckStatus = "unknown" | "confirmed" | "blocked";
+export const CHECK_LABELS: Record<CheckStatus, string> = {
+  unknown: "미확인", confirmed: "내가 확인함", blocked: "조건 불일치",
+};
 export interface PlanStop {
   id: string;
   title: string;
@@ -114,4 +117,42 @@ export function planShareText(plan: VisitPlan) {
     "직접 기록한 확인 상태이며 사이트의 입장 보증이나 최적 이동 경로가 아닙니다.",
     "https://goodthingfor.com/pet-travel",
   ].join("\n\n");
+}
+
+export function stopReviewStatus(stop: PlanStop): CheckStatus {
+  if (stop.checks.includes("blocked")) return "blocked";
+  return stop.checks.every(status => status === "confirmed") ? "confirmed" : "unknown";
+}
+
+export function planReviewSummary(plan: VisitPlan) {
+  const checks = plan.stops.flatMap(stop => stop.checks);
+  return {
+    total: checks.length,
+    confirmed: checks.filter(status => status === "confirmed").length,
+    unknown: checks.filter(status => status === "unknown").length,
+    blocked: checks.filter(status => status === "blocked").length,
+    completedStops: plan.stops.filter(stop => stopReviewStatus(stop) === "confirmed").length,
+  };
+}
+
+export function planReviewTasks(plan: VisitPlan) {
+  return plan.stops.flatMap((stop, stopIndex) => stop.checks.flatMap((status, fieldIndex) =>
+    status === "confirmed" ? [] : [{ stopIndex, fieldIndex, title: stop.title, field: CHECK_FIELDS[fieldIndex], status }],
+  )).sort((a, b) => Number(b.status === "blocked") - Number(a.status === "blocked"));
+}
+
+// Quote CSV fields and neutralize spreadsheet formulas, including whitespace-prefixed input.
+function csvCell(value: string) {
+  const safe = /^[\s]*[=+@-]/.test(value) || /^[\t\r\n]/.test(value) ? `'${value}` : value;
+  return `"${safe.replaceAll('"', '""')}"`;
+}
+
+export function planComparisonCsv(plan: VisitPlan) {
+  const rows = [
+    ["장소", "주소", ...CHECK_FIELDS, "확인 상태", "기록 기준"],
+    ...plan.stops.map(stop => [stop.title, stop.address, ...stop.checks.map(status => CHECK_LABELS[status]),
+      stopReviewStatus(stop) === "confirmed" ? "4항목 직접 확인" : CHECK_LABELS[stopReviewStatus(stop)],
+      "사용자 기록·입장 보증 아님" ]),
+  ];
+  return "\uFEFF" + rows.map(row => row.map(csvCell).join(",")).join("\r\n") + "\r\n";
 }
