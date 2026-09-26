@@ -106,7 +106,7 @@ export default function PetTravelVisitChecklist() {
 	return (
 		<main className="content-page guide-page">
 			<nav className="top-nav" aria-label="주요 메뉴">
-				<Link className="brand" to="/">
+				<Link reloadDocument className="brand" to="/">
 					<span className="brand-mark" aria-hidden="true">
 						G
 					</span>
@@ -124,7 +124,7 @@ export default function PetTravelVisitChecklist() {
 			</nav>
 
 			<nav className="breadcrumb" aria-label="현재 위치">
-				<Link to="/">홈</Link>
+				<Link reloadDocument to="/">홈</Link>
 				<span aria-hidden="true">/</span>
 				<Link to="/pet-travel">반려동물 여행</Link>
 				<span aria-hidden="true">/</span>
@@ -151,13 +151,9 @@ export default function PetTravelVisitChecklist() {
 				</section>
 
 				<section className="content-section" aria-labelledby="guide-purpose-title">
-					<h2 id="guide-purpose-title">이 가이드가 해결하는 문제</h2>
-					<p>
-						반려동물 동반 장소는 이름이나 사진만 보고 정하면 현장에서 조건을
-						다시 확인해야 할 수 있습니다. GoodThingz는 공식 데이터에 있는
-						정보와 없는 정보를 나누어 보여주므로, 사용자는 먼저 후보를 좁히고
-						마지막 확인이 필요한 항목을 놓치지 않을 수 있습니다.
-					</p>
+					<h2 id="guide-purpose-title">답변에 따라 다음 행동을 정하세요.</h2>
+					<dl className="policy-list"><div><dt>내 조건으로 확인함</dt><dd>방문일·구역·동물 조건과 답변 시점을 계획에 기록합니다. 일반 소개 문구와 직접 받은 답변을 구분하세요.</dd></div><div><dt>조건이 맞지 않음</dt><dd>실내가 필요하지만 야외만 허용하거나 장비 조건을 지킬 수 없다면 다른 후보를 찾습니다. 조건을 지키지 않은 입장 방법을 찾지 않습니다.</dd></div><div><dt>아직 답을 못 받음</dt><dd>미확인 상태로 남기고 대체 후보를 마련합니다. 빈칸을 허용으로 바꾸어 동행자에게 확정 일정으로 전달하지 않습니다.</dd></div></dl>
+					<Link className="text-button" to="/pet-travel/data-notes#comparisons">실제 장소에서 조건이 갈리는 비교 3개</Link>
 				</section>
 
 				<section className="content-section" aria-labelledby="guide-steps-title">

@@ -41,7 +41,7 @@ export default function Privacy() {
 	return (
 		<main className="content-page">
 			<nav className="top-nav" aria-label="주요 메뉴">
-				<Link className="brand" to="/">
+				<Link reloadDocument className="brand" to="/">
 					<span className="brand-mark" aria-hidden="true">
 						G
 					</span>
@@ -54,7 +54,7 @@ export default function Privacy() {
 				</div>
 			</nav>
 			<nav className="breadcrumb" aria-label="현재 위치">
-				<Link to="/">홈</Link>
+				<Link reloadDocument to="/">홈</Link>
 				<span aria-hidden="true">/</span>
 				<span>개인정보</span>
 			</nav>

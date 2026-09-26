@@ -5,7 +5,7 @@ export function SiteNav() {
   const reloadDocument = useLocation().pathname === "/";
   return (
     <nav className="top-nav product-nav" aria-label="주요 메뉴">
-      <NavLink reloadDocument={reloadDocument} className="brand" to="/" aria-label="GoodThingz 홈">
+      <NavLink reloadDocument className="brand" to="/" aria-label="GoodThingz 홈">
         <span className="brand-mark" aria-hidden="true">
           G
         </span>
@@ -16,6 +16,7 @@ export function SiteNav() {
           장소 찾기
         </NavLink>
         <NavLink reloadDocument={reloadDocument} to="/pet-travel/guides">방문 가이드</NavLink>
+        <NavLink reloadDocument={reloadDocument} to="/pet-travel/data-notes">데이터 읽기</NavLink>
         <NavLink reloadDocument={reloadDocument} to="/pet-travel/plan">내 방문 계획</NavLink>
       </div>
     </nav>

@@ -4,6 +4,7 @@ import { Link } from "react-router";
 import { visitEvidence, formatRetrievalTime } from "../visit-evidence";
 import { loadInitialPlaces } from "../pet-tour.server";
 import { SiteNav } from "../components/site-nav";
+import { PlaceEnquiry } from "../components/place-enquiry";
 
 import type { Route } from "./+types/pet-travel";
 import type {
@@ -545,7 +546,7 @@ export default function PetTravel({ loaderData }: Route.ComponentProps) {
 				<SiteNav />
 
 				<nav className="breadcrumb" aria-label="현재 위치">
-					<Link to="/">홈</Link>
+					<Link reloadDocument to="/">홈</Link>
 					<span aria-hidden="true">/</span>
 					<span>반려동물 여행</span>
 				</nav>
@@ -1056,7 +1057,6 @@ function DetailPanel({
 	const images = (detail?.images ?? []).filter((image) =>
 		["Type1", "Type3"].includes(image.copyrightType ?? ""),
 	);
-	const missingEvidence = detail ? visitEvidence(detail).filter((row) => !row.value) : [];
 
 	return (
 		<aside className="detail-panel" aria-labelledby="detail-title">
@@ -1111,12 +1111,7 @@ function DetailPanel({
 						</section>
 					) : null}
 
-					<section className="evidence-summary" aria-label="추가 확인할 정보">
-						<h3>{missingEvidence.length ? "별도 안내가 표시되지 않은 항목" : "표시된 안내와 내 방문 조건을 대조하세요"}</h3>
-						{missingEvidence.length > 0 ? <p>{missingEvidence.map((row) => row.label).join(" · ")}</p> : null}
-						<p>없는 정보는 허용이나 금지가 아닙니다. 중복 문장은 다른 항목에 통합될 수 있으니 전체 동반 안내도 함께 읽어보세요. 내 동물의 종류·체중·마릿수와 이용 구역은 장소에 최종 확인하세요.</p>
-						<Link className="text-button" to="/pet-travel/guides/visit-checklist#visit-planner">확인할 질문과 준비물 정리</Link>
-					</section>
+					<PlaceEnquiry key={item.id} detail={detail} title={item.title} />
 
 					<div className="quick-facts" role="group" aria-label="핵심 동반 조건">
 						<div>

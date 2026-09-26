@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { SiteNav } from "../components/site-nav";
 
 import type { Route } from "./+types/about";
 import {
@@ -10,9 +11,9 @@ import {
 } from "../seo";
 
 export function meta({}: Route.MetaArgs) {
-	const title = "GoodThingz 소개 - 무료 공공데이터 생활 서비스";
+	const title = "GoodThingz 소개 | 반려동물 여행 자료의 작성·검증 원칙";
 	const description =
-		"GoodThingz는 공공데이터를 검색, 비교, 판단 기준으로 정리해 실제 생활에서 바로 활용할 수 있게 돕는 무료 서비스입니다.";
+		"반려동물 여행 자료의 출처, 독립 운영과 편집 방식, 실제 조사와 가상 예시의 구분, 수정 내역과 오류 제보 방법을 공개합니다.";
 
 	return [
 		{ title },
@@ -40,38 +41,23 @@ export function meta({}: Route.MetaArgs) {
 export default function About() {
 	return (
 		<main className="content-page">
-			<nav className="top-nav" aria-label="주요 메뉴">
-				<Link className="brand" to="/">
-					<span className="brand-mark" aria-hidden="true">
-						G
-					</span>
-					<span>GoodThingz</span>
-				</Link>
-				<div className="nav-links">
-					<Link to="/pet-travel">반려동물 여행</Link>
-					<Link to="/data-sources/kto-pet-tour">데이터 출처</Link>
-					<Link to="/privacy">개인정보</Link>
-				</div>
-			</nav>
+			<SiteNav />
 			<nav className="breadcrumb" aria-label="현재 위치">
-				<Link to="/">홈</Link>
+				<Link reloadDocument to="/">홈</Link>
 				<span aria-hidden="true">/</span>
 				<span>소개</span>
 			</nav>
 			<section className="content-hero" aria-labelledby="about-title">
 				<p className="eyebrow">서비스 소개</p>
-				<h1 id="about-title">공공데이터를 생활의 판단 도구로 바꿉니다.</h1>
+				<h1 id="about-title">GoodThingz의 자료는 이렇게 만듭니다.</h1>
 				<p className="lead">
-					GoodThingz는 무료 공공데이터를 사용자가 빠르게 검색하고 비교하고
-					결정할 수 있는 형태로 정리하는 전문 데이터 서비스입니다.
+					반려동물과 갈 장소의 동반 조건을 읽고, 확인한 사실로 방문을 준비하는 독립 서비스입니다.
 				</p>
 			</section>
 			<section className="content-section">
 				<h2>운영 원칙</h2>
 				<p>
-					모든 핵심 기능은 무료입니다. 결제, 구독, Paywall, 핵심 기능 이용을
-					위한 로그인 강요는 만들지 않습니다. 목표는 무료지만 유료 서비스처럼
-					정돈된 검색, 비교, 판단 경험을 제공하는 것입니다.
+					검색·비교·계산·저장 기능은 로그인 없이 무료로 이용합니다. 예약을 중개하거나 장소의 입장을 보증하지 않습니다. 이번 데이터 분석에 수록된 장소는 유형별 수정일 기준으로 선택했으며, 협찬 순위나 현장 방문 추천이 아닙니다.
 				</p>
 			</section>
 			<section className="content-section">
@@ -94,7 +80,7 @@ export default function About() {
 			<section className="content-section">
 				<h2>운영과 데이터 오류 제보</h2>
 				<p>
-					GoodThingz 운영팀은 공식 데이터의 출처와 한계를 공개하고, 잘못된
+					GoodThingz 운영자는 공식 데이터의 출처와 한계를 공개하고, 잘못된
 					표시나 개선 제안을 검토합니다. 장소 정보는 제공기관의 원본 데이터에
 					따라 달라질 수 있으므로, 오류 제보에는 장소명과 확인한 내용을 함께
 					남겨 주세요.
@@ -111,6 +97,15 @@ export default function About() {
 					공개 제보 공간에는 전화번호, 현재 위치, 인증키 같은 개인정보를 남기지
 					마세요. 제보 작성에는 GitHub 로그인이 필요하며, 장소 검색과 비교에는 로그인이 필요하지 않습니다.
 				</p>
+			</section>
+			<section className="content-section">
+				<h2>원자료와 편집 내용을 분리합니다.</h2>
+				<ol className="decision-steps"><li><h3>대상과 날짜를 정합니다.</h3><p>분석 전에 표본 선택 방법과 조회 시점을 정합니다. 일부 자료를 전국 통계로 확대하거나, 자료를 읽은 날을 현장 검증일로 바꾸지 않습니다.</p></li><li><h3>원문과 나의 해석을 나눕니다.</h3><p>동물 종류·구역·장비에 적힌 사실을 먼저 보존하고, 그 사실에서 이용자가 판단할 수 있는 범위만 설명합니다. 빈칸과 조건 없는 허용은 다른 상태로 다룹니다.</p></li><li><h3>다음 행동을 연결합니다.</h3><p>아직 답이 없는 부분은 문의 문장으로 남깁니다. 검색의 현재 자료, 비교, 방문 계획과 연결하되 자동 입장 판정이나 근거 없는 추천 점수는 제공하지 않습니다.</p></li></ol>
+			</section>
+			<section className="content-section">
+				<h2>최근 편집 내역</h2>
+				<p><time dateTime="2026-09-26">2026-09-26</time> · 관광지·문화시설·숙박·음식점 12곳을 조사한 <Link className="text-button" to="/pet-travel/data-notes">동반 조건 분석</Link>을 발행했습니다. 표본별 원문·해석·질문과 세 가지 일정 비교를 공개하고, 장소별 문의 초안과 추가비 단위 계산을 추가했습니다.</p>
+				<p>가이드의 가상 예시는 실제 후기나 조사 실적에 포함하지 않습니다. 내용이 잘못된 경우 위 오류 제보 경로로 장소명·자료 번호·틀린 항목·공개 근거 링크를 알려주세요. 인증서나 개인 연락처는 공개 제보에 올리지 마세요.</p>
 			</section>
 		</main>
 	);

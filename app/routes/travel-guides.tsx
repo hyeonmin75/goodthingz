@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link } from "react-router";
 import type { Route } from "./+types/travel-guides";
 import { SiteNav } from "../components/site-nav";
+import { PetFeeCalculator } from "../components/pet-fee-calculator";
+import { CASE_NOTES, STUDY_PATH, findStudyRecord } from "../content/field-study";
 import {
   TRAVEL_GUIDES,
   GUIDE_PATH,
@@ -43,6 +45,8 @@ export function meta({}: Route.MetaArgs) {
 
 export default function TravelGuides() {
   const [message, setMessage] = useState("");
+  const [category, setCategory] = useState("");
+  const visibleGuides = TRAVEL_GUIDES.filter(guide => !category || guide.category === category);
   async function copyQuestions(title: string, questions: string[]) {
     try {
       await navigator.clipboard.writeText(questions.join("\n"));
@@ -57,29 +61,28 @@ export default function TravelGuides() {
     <main className="library-page" id="top">
       <SiteNav />
       <nav className="breadcrumb" aria-label="현재 위치">
-        <Link to="/">홈</Link>
+        <Link reloadDocument to="/">홈</Link>
         <span aria-hidden="true">/</span>
         <span>방문 가이드</span>
       </nav>
       <header className="library-intro">
-        <p className="eyebrow">GOODTHINGZ FIELD NOTES</p>
+        <p className="eyebrow">GOODTHINGZ 방문 조건 읽는 법</p>
         <h1>반려동물 여행 판단 가이드</h1>
         <p className="lead">내 상황에 맞는 질문부터, 출발 전에 정리하세요.</p>
         <p>
-          자료를 읽는 것에서 방문 결정을 내리는 것까지. 아래 10개 상황은 서로
-          다른 판단 문제를 다룹니다. 방문 후기나 장소별 허용 규정이 아닌
-          GoodThingz의 편집 가이드이며, 모든 사례는 설명을 위한 가상 상황입니다.
+          먼저 나의 동물 조건과 이용할 공간을 정하세요. 아래 10개 가이드에서 필요한 질문을 고르고, 실제 장소 분석과 대조할 수 있습니다. 본문의 가상 예시와 별도 링크의 실제 데이터 분석은 구분해 표시합니다.
         </p>
         <p className="editor-byline">
-          작성: GoodThingz · 공개·수정일{" "}
+          작성: GoodThingz · 최초 공개 2026-09-15 · 수정일{" "}
           <time dateTime={GUIDE_UPDATED}>{GUIDE_UPDATED}</time> ·{" "}
           <Link to="/about">작성·수정 원칙</Link>
         </p>
       </header>
+      <div className="guide-toolbar"><label htmlFor="guide-category">지금 준비하는 것</label><select id="guide-category" value={category} onChange={e => setCategory(e.target.value)}><option value="">전체 상황</option>{[...new Set(TRAVEL_GUIDES.map(guide => guide.category))].map(value => <option key={value}>{value}</option>)}</select><span role="status">{visibleGuides.length}개 가이드</span><Link className="text-button" to={STUDY_PATH}>실제 12곳 비교 읽기</Link></div>
       <div className="library-layout">
         <nav className="guide-index" aria-label="상황별 목차">
           <h2>어떤 상황인가요?</h2>
-          {TRAVEL_GUIDES.map((guide, index) => (
+          {visibleGuides.map((guide, index) => (
             <a href={`#${guide.id}`} key={guide.id}>
               <span>{String(index + 1).padStart(2, "0")}</span>
               {guide.title}
@@ -89,7 +92,7 @@ export default function TravelGuides() {
           <Link to="/pet-travel/plan">내 방문 계획</Link>
         </nav>
         <div className="guide-articles">
-          {TRAVEL_GUIDES.map((guide, index) => (
+          {visibleGuides.map((guide, index) => (
             <article
               className="decision-article"
               id={guide.id}
@@ -119,6 +122,8 @@ export default function TravelGuides() {
                   <strong>판단:</strong> {guide.example.decision}
                 </p>
               </section>
+              {guide.id === "budget" ? <PetFeeCalculator /> : null}
+              {CASE_NOTES.some(note => note.guide === guide.id) ? <section className="guide-real-cases"><h3>실제 자료에 적용한 사례</h3>{CASE_NOTES.filter(note => note.guide === guide.id).map(note => <Link key={note.id} to={`${STUDY_PATH}#record-${note.id}`}>{findStudyRecord(note.id).title} · {note.heading}</Link>)}</section> : null}
               <section
                 className="guide-enquiry"
                 aria-label="장소에 확인할 질문"

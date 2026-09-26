@@ -12,7 +12,7 @@ async function main() {
   const robots = await (await fetch(base + '/robots.txt')).text();
   assert.match(robots, /Allow: \/\n/);
   assert.doesNotMatch(robots, /Disallow: \/(?:ads\.txt)?\s*$/m);
-  for (const route of ['/', '/?keyword=test', '/pet-travel', '/pet-travel?keyword=test', '/pet-travel/plan', '/pet-travel/guides', '/privacy', '/adsense-audit-missing']) {
+  for (const route of ['/', '/?keyword=test', '/pet-travel', '/pet-travel?keyword=test', '/pet-travel/plan', '/pet-travel/guides', '/pet-travel/data-notes', '/pet-travel/guides/visit-checklist', '/data-sources/kto-pet-tour', '/about', '/privacy', '/adsense-audit-missing']) {
     const response = await fetch(base + route);
     assert.equal(response.status, route.endsWith('missing') ? 404 : 200);
     const html = await response.text();
@@ -51,7 +51,7 @@ async function main() {
         assert.equal(await page.evaluate(() => window.__adsenseAuditLoaded), undefined, 'Leaving homepage must clear the ad runtime');
         assert.equal(await page.locator('script[src*="pagead2.googlesyndication.com"]').count(), 0);
       }
-      // Entering home through client navigation must also load the snippet once.
+      // Every entry into home must load a fresh document and the snippet once.
       await page.locator('.top-nav a[href="/"]').click();
       await page.waitForURL(base + '/');
       await page.waitForFunction(() => window.__adsenseAuditLoaded === true);
@@ -59,6 +59,12 @@ async function main() {
       await page.locator('.top-nav a[href="/pet-travel/plan"]').click();
       await page.waitForURL(base + '/pet-travel/plan');
       assert.equal(await page.evaluate(() => window.__adsenseAuditLoaded), undefined);
+      await page.locator('.top-nav a[href="/"]').click();
+      await page.waitForURL(base + '/');
+      await page.waitForFunction(() => window.__adsenseAuditLoaded === true);
+      await page.goBack();
+      await page.waitForURL(base + '/pet-travel/plan');
+      assert.equal(await page.evaluate(() => window.__adsenseAuditLoaded), undefined, 'Browser back must not carry the ad runtime into a private page');
       assert.deepEqual(errors, [], 'Browser runtime errors');
       reports.push({ width, snippet: 'PASS', navigationIsolation: 'PASS', runtimeErrors: errors.length });
       await page.close();

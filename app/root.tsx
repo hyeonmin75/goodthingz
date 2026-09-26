@@ -55,6 +55,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				<footer className="site-footer">
 					<nav aria-label="운영 및 개인정보 안내">
 						<Link reloadDocument={loadAdsenseCode} to="/pet-travel/guides">방문 가이드</Link>
+						<Link reloadDocument={loadAdsenseCode} to="/pet-travel/data-notes">데이터 분석·비교 사례</Link>
 						<Link reloadDocument={loadAdsenseCode} to="/pet-travel/plan">내 방문 계획</Link>
 						<Link reloadDocument={loadAdsenseCode} to="/about">서비스 소개·오류 제보</Link>
 						<Link reloadDocument={loadAdsenseCode} to="/privacy">개인정보 처리 안내</Link>

@@ -25,7 +25,7 @@ export default function PetTravelCompareNoindex() {
 	return (
 		<main className="content-page compact-content">
 			<nav className="breadcrumb" aria-label="현재 위치">
-				<Link to="/">홈</Link>
+				<Link reloadDocument to="/">홈</Link>
 				<span aria-hidden="true">/</span>
 				<Link to="/pet-travel">반려동물 여행</Link>
 				<span aria-hidden="true">/</span>

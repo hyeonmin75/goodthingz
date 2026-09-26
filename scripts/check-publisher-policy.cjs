@@ -5,7 +5,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const base = process.env.AUDIT_BASE_URL || 'http://127.0.0.1:8790';
 
 async function main() {
-  const indexPaths = ['/', '/pet-travel', '/about', '/privacy', '/data-sources/kto-pet-tour', '/pet-travel/guides/visit-checklist', '/pet-travel/guides'];
+  const indexPaths = ['/', '/pet-travel', '/about', '/privacy', '/data-sources/kto-pet-tour', '/pet-travel/guides/visit-checklist', '/pet-travel/guides', '/pet-travel/data-notes'];
   const titles = new Set();
   for (const route of indexPaths) {
     const response = await fetch(base + route);
@@ -178,8 +178,9 @@ async function main() {
       await page.goto(base + '/pet-travel');
       await page.locator('.place-card').first().waitFor();
       if (width < 768) await page.getByRole('button', { name: '지도와 상세', exact: true }).click();
-      await page.locator('.evidence-summary').waitFor();
-      assert.match(await page.locator('.evidence-summary').innerText(), /동반 가능 동물/);
+      await page.locator('.place-enquiry summary').click();
+      assert.match(await page.locator('.place-enquiry').innerText(), /동물·체중·마릿수/);
+      assert.match(await page.locator('.place-enquiry').innerText(), /별도 안내 없음/);
       assert.doesNotMatch(await page.locator('.detail-panel').innerText(), /동반 조건 확인됨/);
       await page.locator('.detail-panel').screenshot({ path: path.join(screenshots, `${width}-evidence.png`) });
       if (width < 768) await page.getByRole('button', { name: '목록', exact: true }).click();

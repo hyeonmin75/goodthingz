@@ -1,9 +1,11 @@
 import type { Route } from "./+types/home";
 import { Link } from "react-router";
+import { ArrowRight, BookOpen, Coffee, BedDouble, Trees } from "lucide-react";
 import { SiteNav } from "../components/site-nav";
 import { TRAVEL_GUIDES, GUIDE_PATH } from "../content/travel-guides";
 import { loadInitialPlaces } from "../pet-tour.server";
 import { formatRetrievalTime } from "../visit-evidence";
+import { CASE_NOTES, STUDY_PATH, STUDY_DATE, findStudyRecord } from "../content/field-study";
 import {
   canonicalUrl,
   DATA_PROVIDER,
@@ -26,9 +28,9 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function meta({}: Route.MetaArgs) {
-  const title = "GoodThingz | 반려동물 동반 장소 조건·거리·지도 확인";
+  const title = "GoodThingz | 반려동물 여행, 동반 조건부터 비교";
   const description =
-    "반려동물과 갈 곳을 정할 때 필요한 동반 조건, 위치와 거리, 공식 방문 정보를 한 화면에서 확인하세요. 확인되지 않은 정보는 추측하지 않습니다.";
+    "실제 장소의 동반 구역·체중·이동장 조건을 비교하고, 내 동물 조건에 맞는 문의와 방문 계획을 준비하세요. 12곳 데이터 분석, 상황별 가이드, 주변 장소 검색을 제공합니다.";
 
   return [
     { title },
@@ -100,12 +102,12 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           />
         </picture>
         <div className="home-copy">
-          <p className="eyebrow">함께 갈 곳, 확실하게</p>
+          <p className="eyebrow">함께 갈 곳, 조건부터</p>
           <h1 id="home-title">
             <span>GoodThingz</span>
             <span>반려동물 동반여행</span>
           </h1>
-          <p className="lead">동반 조건과 위치를 한눈에.</p>
+          <p className="lead">갈 곳을 찾고, 우리 조건으로 비교하세요.</p>
           <form
             action="/pet-travel"
             method="get"
@@ -132,26 +134,44 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             </Link>
           </div>
           <p className="hero-source">
-            출처: {DATA_PROVIDER} · 기준: {DATA_UPDATED} 갱신
-            <br />
-            소개 이미지는 AI로 제작했으며 특정 여행지의 실제 사진이 아닙니다.
+            소개 이미지: AI 제작 · 특정 장소의 실제 사진이 아닙니다.
           </p>
         </div>
+      </section>
+
+      <nav className="purpose-nav" aria-label="여행 목적별 장소 찾기">
+        <Link reloadDocument to="/pet-travel?contentTypeId=39"><Coffee size={22} aria-hidden="true" /><span>같이 식사할 곳<small>좌석·계절 조건 확인</small></span><ArrowRight size={18} aria-hidden="true" /></Link>
+        <Link reloadDocument to="/pet-travel?contentTypeId=32"><BedDouble size={22} aria-hidden="true" /><span>하룻밤 머물 곳<small>객실·공용공간 비교</small></span><ArrowRight size={18} aria-hidden="true" /></Link>
+        <Link reloadDocument to="/pet-travel?contentTypeId=12"><Trees size={22} aria-hidden="true" /><span>함께 둘러볼 곳<small>동반 구역·입구 확인</small></span><ArrowRight size={18} aria-hidden="true" /></Link>
+      </nav>
+
+      <section className="editorial-section home-investigation" aria-labelledby="investigation-title">
+        <div className="section-heading"><div><p className="eyebrow">GoodThingz 데이터 읽기 · {STUDY_DATE}</p><h2 id="investigation-title">‘동반 가능’ 뒤에 남는 조건</h2></div><Link reloadDocument className="text-button" to={STUDY_PATH}>12곳 분석 전체 보기 <ArrowRight size={16} aria-hidden="true" /></Link></div>
+        <p className="section-context">같은 목록에 있어도 실내 출입과 숙박 조건은 달랐습니다. 원문을 실제 여행 상황에 대입해 읽었습니다.</p>
+        <div className="investigation-grid">{["129894", "2804371", "736117"].map(id => {
+          const record = findStudyRecord(id);
+          const note = CASE_NOTES.find(item => item.id === id)!;
+          return <article className="investigation-card" key={id}>
+            <p className="eyebrow">{record.type}</p><h3><Link reloadDocument to={`${STUDY_PATH}#record-${id}`}>{note.heading}</Link></h3>
+            <p className="record-venue">{record.title}</p><p>{id === "129894" ? "목록에는 있지만 내부 동반은 불가. 실내 전시를 함께 보는 일정과는 다른 조건입니다." : id === "2804371" ? "객실당 체중·증빙·레스토랑 제한이 함께 있습니다. 체중 하나로 예약을 결정할 수 없습니다." : "대형견의 계절별 좌석과 겨울철 켄넬 조건을 나누어 읽어야 합니다."}</p>
+            <Link reloadDocument className="text-button" to={`${STUDY_PATH}#record-${id}`}><BookOpen size={16} aria-hidden="true" /> 근거와 다음 질문</Link>
+          </article>;
+        })}</div>
+        <p className="source-inline">한국관광공사 자료 12곳의 비대표 표본 분석 · 현장 방문 후기나 현재 입장 보증이 아닙니다.</p>
       </section>
 
       <section className="editorial-section" aria-labelledby="candidate-title">
         <div className="section-heading">
           <div>
             <p className="eyebrow">장소 탐색</p>
-            <h2 id="candidate-title">어디를 살펴볼까요?</h2>
+            <h2 id="candidate-title">지금 자료에서 찾아볼 후보</h2>
           </div>
           <Link reloadDocument className="text-button" to="/pet-travel">
             전체 후보 찾기
           </Link>
         </div>
         <p className="section-context">
-          공식 자료의 수정일순 일부입니다. 인기순·추천순이 아니며, 등록만으로
-          모든 반려동물의 입장을 보장하지 않습니다.
+          한국관광공사 자료의 수정일순 일부입니다. 인기순이 아니며 각 장소의 상세 조건을 대조해야 합니다.
         </p>
         {loaderData.places?.items.length ? (
           <>
@@ -245,8 +265,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                 {String(index + 1).padStart(2, "0")} / {guide.category}
               </span>
               <h3>{guide.title}</h3>
-              <p>{guide.question}</p>
-              <span className="candidate-action">확인 순서와 문의 문장</span>
+              <span className="candidate-action">{guide.id === "budget" ? "추가비 계산과 비교" : "확인 순서와 문의 문장"} <ArrowRight size={16} aria-hidden="true" /></span>
             </Link>
           ))}
         </div>
@@ -263,9 +282,6 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             남겨두세요. 확인한 금액만 합산하고, 동행자에게는 장소와 확인 상태만
             전달할 수 있습니다.
           </p>
-          <p className="muted-copy">
-            자동 경로·가격 예측이 아닌 직접 작성하는 방문 후보 계획입니다.
-          </p>
         </div>
         <div className="hero-actions">
           <Link reloadDocument className="button button-primary" to="/pet-travel/plan">
@@ -281,12 +297,9 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         </div>
       </section>
       <section className="editorial-section source-summary">
-        <h2>자료와 직접 확인한 사실을 구분합니다.</h2>
+        <h2>누가, 어떤 자료로 만들었나요?</h2>
         <p>
-          {DATA_PROVIDER} 동반여행 자료를 바탕으로 장소를 찾고, GoodThingz의
-          편집 가이드로 확인할 질문을 정리합니다. 데이터 갱신 기준은{" "}
-          {DATA_UPDATED}이며, 빈 항목·실시간 운영·현장 입장 조건은 추측하지
-          않습니다. 이 사이트의 글은 현장 방문 후기나 입장 보증이 아닙니다.
+          장소 정보는 {DATA_PROVIDER}, 비교 사례와 판단 가이드는 독립 운영자인 GoodThingz가 작성합니다. 원자료 서비스의 갱신 기준은 {DATA_UPDATED}이며 개별 장소의 현장 확인일과는 다릅니다.
         </p>
         <div className="source-links">
           <Link reloadDocument to="/data-sources/kto-pet-tour">데이터 출처와 한계</Link>

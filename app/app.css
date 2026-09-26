@@ -2091,3 +2091,108 @@ button:disabled {
 	.plan-layout { display: block; width: 100%; padding: 0; }
 	.plan-stop { break-inside: avoid; }
 }
+
+/* Evidence-led reading and decision tools share the existing quiet UI palette. */
+.purpose-nav { width: min(1180px, calc(100% - 32px)); margin: 0 auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: 1px solid #cbd5db; }
+.purpose-nav > a { display: flex; align-items: center; gap: 16px; min-width: 0; padding: 24px 12px; color: #115e59; }
+.purpose-nav > a > span { flex: 1; font-weight: 750; }
+.purpose-nav small { display: block; font-size: 14px; color: #4b5563; font-weight: 400; margin-top: 5px; }
+.purpose-nav > a:hover { background: #e6f4f1; }
+.purpose-nav svg, .text-button svg, .button svg { flex-shrink: 0; }
+.text-button:has(svg), .candidate-action:has(svg) { display: inline-flex; align-items: center; gap: 8px; }
+.investigation-grid, .finding-grid, .comparison-notes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 24px; }
+.investigation-card { display: flex; flex-direction: column; min-width: 0; padding: 24px; background: #fff; border: 1px solid #cbd5db; border-top: 4px solid #0f766e; border-radius: 6px; }
+.investigation-card:nth-child(2) { border-top-color: #a33e67; }
+.investigation-card:nth-child(3) { border-top-color: #2764a0; }
+.investigation-card h3 { font-size: 22px; line-height: 1.5; color: #111827; font-weight: 750; margin: 10px 0; }
+.investigation-card h3 a:hover { text-decoration: underline; }
+.investigation-card > p { margin-bottom: 12px; line-height: 1.75; }
+.investigation-card > .text-button { margin-top: auto; }
+.record-venue { color: #115e59; font-weight: 650; }
+.home-page .home-guide-grid { gap: 0 24px; }
+.home-page .home-guide { background: transparent; border: 0; border-radius: 0; border-bottom: 1px solid #cbd5db; padding: 20px 0; }
+.home-page .home-guide h3 { font-size: 19px; }
+.home-page .home-guide:hover { background: #edf5f3; }
+.home-page .home-guide .candidate-action { margin-top: 6px; }
+.study-page { background: #fff; }
+.study-intro { padding: 40px 0; }
+.study-intro h1 { font-size: 38px; }
+.finding { border-left: 3px solid #0f766e; padding: 4px 20px; }
+.finding:nth-child(2) { border-left-color: #a33e67; }
+.finding:nth-child(3) { border-left-color: #2764a0; }
+.finding strong { font-size: 36px; color: #111827; }
+.finding h3 { font-size: 18px; font-weight: 750; color: #111827; margin-bottom: 8px; }
+.study-findings .source-inline { margin-top: 24px; }
+.study-jump { display: flex; flex-wrap: wrap; gap: 16px 32px; padding: 12px 0; }
+.study-jump a, .study-record-index a { padding: 10px 0; color: #115e59; text-decoration: underline; text-underline-offset: 4px; }
+.study-comparison { padding: 32px 0; border-bottom: 1px solid #d1d5db; scroll-margin-top: 20px; }
+.study-comparison:last-child { border-bottom: 0; padding-bottom: 0; }
+.study-comparison h3, .study-record h3 { font-size: 24px; line-height: 1.5; color: #111827; font-weight: 750; }
+.comparison-notes > div { min-width: 0; border-top: 3px solid #64748b; padding-top: 16px; }
+.comparison-notes h4 { font-size: 18px; line-height: 1.5; font-weight: 700; color: #111827; margin-bottom: 12px; }
+.comparison-notes p { line-height: 1.8; margin-bottom: 12px; }
+.study-conclusion { border-left: 3px solid #0f766e; padding-left: 20px; margin-top: 24px; line-height: 1.8; }
+.study-conclusion strong { display: block; color: #115e59; }
+.study-record-index { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 24px; padding: 0 0 24px; }
+.study-record { padding: 36px 0; border-top: 1px solid #cbd5db; scroll-margin-top: 20px; }
+.study-record header { margin-bottom: 20px; }
+.study-record header p:last-child { margin-top: 10px; }
+.study-photo { max-width: 640px; margin: 20px 0; }
+.study-photo img { max-width: 100%; height: auto; max-height: 360px; object-fit: contain; background: #f1f5f7; }
+.study-photo figcaption { color: #4b5563; font-size: 13px; margin-top: 8px; }
+.study-evidence { padding: 20px; background: #f3f6f8; }
+.study-evidence h4, .study-reading h4, .study-question h4 { font-weight: 750; color: #111827; margin-bottom: 12px; font-size: 17px; }
+.study-evidence dl { margin: 0; }
+.study-evidence dl > div { display: grid; grid-template-columns: 100px minmax(0, 1fr); padding: 8px 0; gap: 12px; }
+.study-evidence dt { font-weight: 650; color: #4b5563; }
+.study-evidence dd { margin: 0; overflow-wrap: anywhere; }
+.study-reading { max-width: 940px; padding: 24px 0; line-height: 1.85; }
+.study-question { max-width: 940px; padding: 0 0 8px 20px; border-left: 3px solid #a33e67; line-height: 1.8; }
+.study-record .source-inline { margin-top: 20px; }
+.study-method .policy-list { margin-top: 24px; }
+.guide-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 20px; width: min(1180px, calc(100% - 32px)); margin: 24px auto 0; }
+.guide-toolbar label { font-weight: 700; }
+.guide-toolbar select { background: #fff; border: 1px solid #9ca3af; border-radius: 6px; min-height: 44px; padding: 8px 32px 8px 12px; }
+.guide-real-cases { padding: 24px 0; border-bottom: 1px solid #d1d5db; }
+.guide-real-cases a { display: block; color: #115e59; text-decoration: underline; text-underline-offset: 4px; padding: 10px 0; line-height: 1.7; }
+.fee-calculator { padding: 24px 0; margin-top: 24px; border-block: 1px solid #cbd5db; }
+.fee-calculator h3, .place-enquiry h3 { display: flex; align-items: center; gap: 8px; font-weight: 750; color: #111827; }
+.fee-fields, .enquiry-profile { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 20px 0; }
+.fee-fields label, .enquiry-profile label { display: flex; flex-direction: column; gap: 8px; font-size: 15px; font-weight: 650; min-width: 0; }
+.fee-fields input, .fee-fields select, .enquiry-profile input, .enquiry-profile select, .enquiry-output textarea { border: 1px solid #9ca3af; background: white; color: #111827; border-radius: 6px; min-height: 44px; padding: 10px 12px; width: 100%; min-width: 0; font: inherit; }
+.fee-fields input:disabled { background: #f1f5f7; color: #64748b; }
+.fee-result { background: #e6f4f1; padding: 20px; display: grid; gap: 8px; }
+.fee-result strong { font-size: 26px; color: #115e59; }
+.place-enquiry { padding: 24px 0; border-bottom: 1px solid #cbd5db; }
+.place-enquiry summary { display: flex; align-items: center; gap: 10px; padding: 10px 0; cursor: pointer; font-weight: 750; color: #115e59; }
+.place-enquiry summary::after { content: "+"; margin-left: auto; font-size: 22px; }
+.place-enquiry[open] summary::after { content: "−"; }
+.enquiry-checks { margin: 0; padding: 0; border: 0; }
+.enquiry-checks legend { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
+.enquiry-checks label { display: flex; gap: 12px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid #d1d5db; }
+.enquiry-checks input { width: 20px; height: 20px; flex-shrink: 0; margin-top: 4px; accent-color: #0f766e; }
+.enquiry-checks label > span { min-width: 0; }
+.enquiry-checks strong { display: block; color: #111827; font-size: 15px; margin-bottom: 6px; }
+.enquiry-checks span span { display: block; line-height: 1.7; font-size: 14px; overflow-wrap: anywhere; }
+.enquiry-output { display: block; margin: 20px 0 12px; font-weight: 650; }
+.enquiry-output textarea { display: block; font-weight: 400; line-height: 1.7; margin-top: 8px; resize: vertical; }
+.place-enquiry .muted-copy { margin-top: 12px; }
+.study-page p, .study-page h1, .study-page h2, .study-page h3, .study-page h4, .study-page a { word-break: keep-all; overflow-wrap: anywhere; }
+@media (max-width: 767px) {
+  .product-nav .nav-links { gap: 8px; font-size: 13px; }
+  .purpose-nav { grid-template-columns: minmax(0, 1fr); }
+  .purpose-nav > a { padding: 14px 0; border-bottom: 1px solid #e1e6e9; }
+  .purpose-nav small { display: inline; margin-left: 10px; font-size: 13px; }
+  .investigation-grid, .finding-grid, .comparison-notes { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .investigation-card { padding: 20px; }
+  .investigation-card h3 { font-size: 20px; }
+  .study-intro { padding: 28px 0; }
+  .study-intro h1 { font-size: 28px; }
+  .study-record-index { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 16px; font-size: 14px; }
+  .study-record h3, .study-comparison h3 { font-size: 22px; }
+  .study-evidence { padding: 16px; }
+  .study-evidence dl > div { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .study-jump { gap: 4px 20px; font-size: 14px; }
+  .guide-toolbar { gap: 10px; }
+  .fee-fields, .enquiry-profile { gap: 12px; }
+}

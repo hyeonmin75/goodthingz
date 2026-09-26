@@ -112,10 +112,7 @@ export default function DataSourceKtoPetTour() {
 			<section className="content-section">
 				<h2>GoodThingz가 더하는 가치</h2>
 				<p>
-					원본 field를 UI에 그대로 노출하지 않고, 장소명, 주소, 좌표,
-					방문 정보, 반려동물 동반 조건, 이미지처럼 사용자가 판단하기 쉬운
-					구조로 바꿉니다. 같은 안내가 여러 field에 반복될 때는 중복을 줄여
-					한 번만 읽어도 이해되게 처리합니다.
+					주소·동물 조건·장비·운영 안내를 같은 기준으로 나누고 반복 문장을 줄입니다. 자료에 있는 사실과 GoodThingz의 해석은 분리합니다. 원자료의 ‘일부 구역’을 실내 허용으로 바꾸거나, 안내가 없는 요금을 무료로 계산하지 않습니다.
 				</p>
 			</section>
 			<section className="content-section">
@@ -135,6 +132,15 @@ export default function DataSourceKtoPetTour() {
 					반려동물 동반 장소 찾기
 				</Link>
 			</section>
+			<section className="content-section">
+				<h2>세 가지 날짜는 뜻이 다릅니다.</h2>
+				<dl className="policy-list"><div><dt>원본 수정일</dt><dd>제공기관의 장소 기록이 수정된 날짜입니다. 모든 조건을 그날 현장에서 검증했다는 뜻은 아닙니다.</dd></div><div><dt>자료 조회 시각</dt><dd>사이트가 자료를 받아온 시각입니다. 기록 자체는 더 오래된 자료일 수 있습니다.</dd></div><div><dt>글의 수정일</dt><dd>GoodThingz가 분석이나 설명을 고친 날짜입니다. <Link to="/pet-travel/data-notes#method">12곳 분석의 조사 방법</Link>처럼 수집일과 편집일을 따로 표시합니다.</dd></div></dl>
+			</section>
+			<section className="content-section">
+				<h2>빈칸과 자료 오류를 읽는 방법</h2>
+				<p>같은 문장을 여러 항목에서 한 번만 표시하도록 정리하기 때문에, 한 항목이 비어 있으면 전체 동반 안내도 함께 확인해야 합니다. 전체 문장에 근거가 없으면 미확인 상태입니다. 별도 안내가 없다는 것은 허용·금지·무료를 뜻하지 않습니다.</p>
+				<p>주소 표기, 구역, 연락처가 공식 홈페이지와 다르면 일치한다고 자동 처리하지 않습니다. 장소명과 자료 번호, 두 출처의 확인 시점을 남겨 <Link to="/about">오류 제보</Link>로 전달할 수 있습니다. 현재 조건은 실제 이용할 구역과 방문일을 지정해 운영자에게 확인하세요.</p>
+			</section>
 		</main>
 	);
 }
@@ -142,7 +148,7 @@ export default function DataSourceKtoPetTour() {
 function SiteNav() {
 	return (
 		<nav className="top-nav" aria-label="주요 메뉴">
-			<Link className="brand" to="/">
+			<Link reloadDocument className="brand" to="/">
 				<span className="brand-mark" aria-hidden="true">
 					G
 				</span>
@@ -167,7 +173,7 @@ function Breadcrumb({
 			{items.map((item, index) => (
 				<span key={item.to}>
 					{index > 0 ? <span aria-hidden="true">/</span> : null}
-					<Link to={item.to}>{item.label}</Link>
+					<Link reloadDocument={item.to === "/"} to={item.to}>{item.label}</Link>
 				</span>
 			))}
 		</nav>

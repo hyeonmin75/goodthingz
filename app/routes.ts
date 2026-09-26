@@ -4,6 +4,7 @@ export default [
 	index("routes/home.tsx"),
 	route("pet-travel", "routes/pet-travel.tsx"),
 	route("pet-travel/guides", "routes/travel-guides.tsx"),
+	route("pet-travel/data-notes", "routes/data-notes.tsx"),
 	route("pet-travel/plan", "routes/travel-plan.tsx"),
 	route(
 		"pet-travel/guides/visit-checklist",

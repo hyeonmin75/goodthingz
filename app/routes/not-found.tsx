@@ -34,7 +34,7 @@ export default function NotFound() {
 					<Link className="button button-primary" to="/pet-travel">
 						반려동물 동반여행 검색
 					</Link>
-					<Link className="button button-secondary" to="/">
+					<Link reloadDocument className="button button-secondary" to="/">
 						홈으로
 					</Link>
 				</div>

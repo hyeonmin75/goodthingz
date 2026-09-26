@@ -12,7 +12,7 @@ export interface TravelGuide {
   searchType: string;
 }
 
-export const GUIDE_UPDATED = "2026-09-15";
+export const GUIDE_UPDATED = "2026-09-26";
 export const GUIDE_PATH = "/pet-travel/guides";
 
 // Editorial decision support, not provider rules or first-hand venue reviews.
