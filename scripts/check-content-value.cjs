@@ -66,7 +66,11 @@ async function main() {
         }
         await page.screenshot({ path: `.wrangler/value-audit/${width}-${route.replace(/\W/g, '') || 'home'}.png`, fullPage: false });
       }
-      await page.getByLabel('지금 준비하는 것').selectOption('비용');
+      await page.getByLabel('지금 준비하는 것').selectOption('planning');
+      assert.equal(await page.locator('.guide-summary').count(), 6);
+      await page.locator('#budget h3 a').click();
+      await page.waitForURL('**/pet-travel/guides/budget');
+      await page.locator('.decision-article').waitFor();
       assert.equal(await page.locator('.decision-article').count(), 1);
       await page.getByLabel('확인한 단가 (원)').fill('20000');
       await page.getByLabel('반려동물 수', { exact: true }).fill('2');
@@ -77,8 +81,8 @@ async function main() {
       await page.getByLabel('확인한 단가 (원)').fill('');
       assert.match(await page.locator('.fee-result').innerText(), /미확인/);
       await page.locator('.fee-calculator').screenshot({ path: `.wrangler/value-audit/${width}-fee.png` });
-      await page.getByLabel('지금 준비하는 것').selectOption('');
-      assert.equal(await page.locator('.decision-article').count(), 10);
+      await page.goto(base + '/pet-travel/guides');
+      assert.equal(await page.locator('.guide-summary').count(), 36);
       await page.goto(base + '/pet-travel');
       if (width < 768) await page.getByRole('button', { name: '지도와 상세', exact: true }).click();
       await page.locator('.place-enquiry summary').click();

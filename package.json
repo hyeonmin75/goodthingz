@@ -54,6 +54,7 @@
     "test:value": "node --experimental-strip-types scripts/check-content-value.cjs",
     "test:links": "node scripts/check-site-links.cjs",
     "test:workspace": "node --experimental-strip-types scripts/check-workspace.cjs",
+    "test:editorial": "node --experimental-strip-types scripts/check-editorial.cjs",
     "test:private": "node scripts/check-private-files.cjs"
   },
   "type": "module"

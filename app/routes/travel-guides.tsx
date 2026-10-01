@@ -1,202 +1,37 @@
 import { useState } from "react";
 import { Link } from "react-router";
+import { ArrowRight, BookOpen, Search, X } from "lucide-react";
 import type { Route } from "./+types/travel-guides";
 import { SiteNav } from "../components/site-nav";
-import { PetFeeCalculator } from "../components/pet-fee-calculator";
-import { CASE_NOTES, STUDY_PATH, findStudyRecord } from "../content/field-study";
-import {
-  TRAVEL_GUIDES,
-  GUIDE_PATH,
-  GUIDE_UPDATED,
-} from "../content/travel-guides";
-import {
-  breadcrumbJsonLd,
-  canonicalUrl,
-  socialMeta,
-  webPageJsonLd,
-} from "../seo";
+import { TRAVEL_GUIDES, GUIDE_CATEGORIES, GUIDE_PATH, GUIDE_UPDATED, guidePath } from "../content/travel-guides";
+import { breadcrumbJsonLd, canonicalUrl, socialMeta, webPageJsonLd } from "../seo";
 
-export function meta({}: Route.MetaArgs) {
-  const title = "반려동물 여행 판단 가이드 10가지 | GoodThingz";
-  const description =
-    "식사·숙박·체중 제한·다견·우천·입구·준비물·예약·추가비·정보 불일치까지. 상황별 확인 순서와 문의 문장으로 방문 계획을 구체화하세요.";
-  return [
-    { title },
-    { name: "description", content: description },
-    ...socialMeta({ title, description, path: GUIDE_PATH }),
-    { name: "robots", content: "index,follow" },
+export function meta({ location }: Route.MetaArgs) {
+  const title = "반려동물 여행 가이드 36편 | 조건·식사·숙박·일정 - GoodThingz";
+  const description = "동반 조건, 식사·카페, 숙박, 이동·현장, 일정·예산, 데이터 판단. 36편의 사례·비교 기준·문의 질문을 읽고 실제 장소와 내 방문 계획에 적용하세요.";
+  return [{ title }, { name: "description", content: description }, ...socialMeta({ title, description, path: GUIDE_PATH }),
+    { name: "robots", content: location.search ? "noindex,follow" : "index,follow" },
     { tagName: "link", rel: "canonical", href: canonicalUrl(GUIDE_PATH) },
-    {
-      "script:ld+json": [
-        webPageJsonLd({
-          name: title,
-          description,
-          path: GUIDE_PATH,
-          dateModified: GUIDE_UPDATED,
-        }),
-        breadcrumbJsonLd([
-          { name: "홈", path: "/" },
-          { name: "방문 가이드", path: GUIDE_PATH },
-        ]),
-      ],
-    },
-  ];
+    { "script:ld+json": [webPageJsonLd({ name: title, description, path: GUIDE_PATH, dateModified: GUIDE_UPDATED }), breadcrumbJsonLd([{ name: "홈", path: "/" }, { name: "방문 가이드", path: GUIDE_PATH }])] }];
 }
 
 export default function TravelGuides() {
-  const [message, setMessage] = useState("");
   const [category, setCategory] = useState("");
-  const visibleGuides = TRAVEL_GUIDES.filter(guide => !category || guide.category === category);
-  async function copyQuestions(title: string, questions: string[]) {
-    try {
-      await navigator.clipboard.writeText(questions.join("\n"));
-      setMessage(`${title}: 문의 문장을 복사했습니다.`);
-    } catch {
-      setMessage(
-        "자동 복사를 사용할 수 없습니다. 본문의 문의 문장을 선택해 복사하세요.",
-      );
-    }
-  }
-  return (
-    <main className="library-page" id="top">
-      <SiteNav />
-      <nav className="breadcrumb" aria-label="현재 위치">
-        <Link reloadDocument to="/">홈</Link>
-        <span aria-hidden="true">/</span>
-        <span>방문 가이드</span>
-      </nav>
-      <header className="library-intro">
-        <p className="eyebrow">GOODTHINGZ 방문 조건 읽는 법</p>
-        <h1>반려동물 여행 판단 가이드</h1>
-        <p className="lead">내 상황에 맞는 질문부터, 출발 전에 정리하세요.</p>
-        <p>
-          먼저 나의 동물 조건과 이용할 공간을 정하세요. 아래 10개 가이드에서 필요한 질문을 고르고, 실제 장소 분석과 대조할 수 있습니다. 본문의 가상 예시와 별도 링크의 실제 데이터 분석은 구분해 표시합니다.
-        </p>
-        <p className="editor-byline">
-          작성: GoodThingz · 최초 공개 2026-09-15 · 수정일{" "}
-          <time dateTime={GUIDE_UPDATED}>{GUIDE_UPDATED}</time> ·{" "}
-          <Link to="/about">작성·수정 원칙</Link>
-        </p>
-      </header>
-      <div className="guide-toolbar"><label htmlFor="guide-category">지금 준비하는 것</label><select id="guide-category" value={category} onChange={e => setCategory(e.target.value)}><option value="">전체 상황</option>{[...new Set(TRAVEL_GUIDES.map(guide => guide.category))].map(value => <option key={value}>{value}</option>)}</select><span role="status">{visibleGuides.length}개 가이드</span><Link className="text-button" to={STUDY_PATH}>실제 12곳 비교 읽기</Link></div>
-      <div className="library-layout">
-        <nav className="guide-index" aria-label="상황별 목차">
-          <h2>어떤 상황인가요?</h2>
-          {visibleGuides.map((guide, index) => (
-            <a href={`#${guide.id}`} key={guide.id}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              {guide.title}
-            </a>
-          ))}
-          <Link to="/pet-travel/guides/visit-checklist">출발 체크리스트</Link>
-          <Link to="/pet-travel/plan">내 방문 계획</Link>
-        </nav>
-        <div className="guide-articles">
-          {visibleGuides.map((guide, index) => (
-            <article
-              className="decision-article"
-              id={guide.id}
-              key={guide.id}
-              aria-labelledby={`${guide.id}-title`}
-            >
-              <header>
-                <p className="eyebrow">
-                  {String(index + 1).padStart(2, "0")} / {guide.category}
-                </p>
-                <h2 id={`${guide.id}-title`}>{guide.title}</h2>
-                <p className="guide-question">{guide.question}</p>
-              </header>
-              <p>{guide.intro}</p>
-              <ol className="decision-steps">
-                {guide.steps.map((step) => (
-                  <li key={step.title}>
-                    <h3>{step.title}</h3>
-                    <p>{step.body}</p>
-                  </li>
-                ))}
-              </ol>
-              <section className="worked-example" aria-label="판단 예시">
-                <h3>상황에 적용해 보기</h3>
-                <p>{guide.example.situation}</p>
-                <p>
-                  <strong>판단:</strong> {guide.example.decision}
-                </p>
-              </section>
-              {guide.id === "budget" ? <PetFeeCalculator /> : null}
-              {CASE_NOTES.some(note => note.guide === guide.id) ? <section className="guide-real-cases"><h3>실제 자료에 적용한 사례</h3>{CASE_NOTES.filter(note => note.guide === guide.id).map(note => <Link key={note.id} to={`${STUDY_PATH}#record-${note.id}`}>{findStudyRecord(note.id).title} · {note.heading}</Link>)}</section> : null}
-              <section
-                className="guide-enquiry"
-                aria-label="장소에 확인할 질문"
-              >
-                <h3>장소에 이렇게 물어보세요</h3>
-                <ul>
-                  {guide.asks.map((ask) => (
-                    <li key={ask}>{ask}</li>
-                  ))}
-                </ul>
-                <button
-                  className="text-button"
-                  type="button"
-                  onClick={() => void copyQuestions(guide.title, guide.asks)}
-                >
-                  문의 문장 복사
-                </button>
-              </section>
-              <dl className="guide-evidence">
-                <div>
-                  <dt>데이터에서 볼 항목</dt>
-                  <dd>{guide.data}</dd>
-                </div>
-                <div>
-                  <dt>판단의 한계</dt>
-                  <dd>{guide.limit}</dd>
-                </div>
-              </dl>
-              <div className="guide-actions">
-                <a
-                  className="button button-primary"
-                  href={`/pet-travel${guide.searchType ? `?contentTypeId=${guide.searchType}` : ""}`}
-                >
-                  {guide.searchType === "32" ? "숙박 후보 찾기" : guide.searchType === "39" ? "음식점 후보 찾기" : guide.searchType === "12" ? "관광지 후보 찾기" : "장소 후보 찾기"}
-                </a>
-                <Link className="button button-secondary" to="/pet-travel/plan">
-                  확인 내용 기록하기
-                </Link>
-                <a href="#top" className="text-button">
-                  목차로
-                </a>
-              </div>
-            </article>
-          ))}
-          <section className="library-method">
-            <h2>이 자료를 만든 기준</h2>
-            <p>
-              한국관광공사 반려동물 동반여행 서비스의 동반·운영·주차·예약·요금
-              안내 항목을 실제 방문 결정 순서로 재구성했습니다. 빈 항목은
-              허용이나 금지로 바꾸지 않고, 최신 현장 조건은 운영자에게
-              확인하도록 구분했습니다. 자료를 열람한 날짜와 장소가 현장 검증된
-              날짜는 같지 않습니다.
-            </p>
-            <p>
-              <Link to="/data-sources/kto-pet-tour">
-                데이터 출처와 이용조건
-              </Link>{" "}
-              ·{" "}
-              <a
-                href="https://www.weather.go.kr/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                기상청 날씨누리
-              </a>{" "}
-              · <Link to="/about">오류 제보</Link>
-            </p>
-          </section>
-        </div>
-      </div>
-      <p role="status" className="copy-feedback">
-        {message}
-      </p>
-    </main>
-  );
+  const [query, setQuery] = useState("");
+  const term = query.trim().toLocaleLowerCase("ko");
+  const groups = GUIDE_CATEGORIES.filter(group => !category || group.id === category).map(group => ({
+    ...group,
+    guides: group.ids.map(id => TRAVEL_GUIDES.find(guide => guide.id === id)!).filter(guide => !term || `${guide.title} ${guide.question} ${guide.intro} ${guide.steps.map(step => step.title).join(" ")}`.toLocaleLowerCase("ko").includes(term)),
+  }));
+  const count = groups.reduce((total, group) => total + group.guides.length, 0);
+  return <main className="library-page" id="top">
+    <SiteNav />
+    <nav className="breadcrumb" aria-label="현재 위치"><Link reloadDocument to="/">홈</Link><span aria-hidden="true">/</span><span>방문 가이드</span></nav>
+    <header className="library-intro"><p className="eyebrow">GOODTHINGZ 여행 자료실</p><h1>반려동물 여행 가이드</h1><p className="lead">지금 결정할 문제부터 찾아보세요.</p><p>우리 동물의 조건을 맞추고, 식사와 숙박을 고른 뒤, 이동과 예산을 연결합니다. 6개 주제의 36편에 확인 순서·판단 사례·비교 기준을 담았습니다.</p><p className="editor-byline">작성·운영: 굳띵즈 · 수정 <time dateTime={GUIDE_UPDATED}>{GUIDE_UPDATED}</time> · <Link to="/about#editorial">작성 원칙</Link></p></header>
+    <nav className="topic-nav" aria-label="가이드 카테고리">{GUIDE_CATEGORIES.map((group, i) => <a key={group.id} href={`#category-${group.id}`} onClick={() => { setCategory(""); setQuery(""); }}><span>{String(i + 1).padStart(2, "0")}</span>{group.name}<small>{group.ids.length}편</small></a>)}</nav>
+    <section className="reading-path" aria-labelledby="reading-path-title"><h2 id="reading-path-title">처음 준비한다면</h2><ol><li><Link to={guidePath("size")}>우리 동물 조건 정하기</Link></li><li><Link to={guidePath("compare-rules")}>같은 기준으로 후보 비교</Link></li><li><Link to={guidePath("day-plan")}>하루 일정에 연결하기</Link></li><li><Link to="/pet-travel/plan">확인한 내용 기록하기</Link></li></ol></section>
+    <div className="catalog-controls"><label><span><Search size={16} aria-hidden="true" /> 가이드 안에서 찾기</span><input type="search" value={query} maxLength={80} onChange={event => setQuery(event.target.value)} placeholder="예: 조식, 이동장, 보증금" /></label><label>지금 준비하는 것<select value={category} onChange={event => setCategory(event.target.value)}><option value="">전체 주제</option>{GUIDE_CATEGORIES.map(group => <option key={group.id} value={group.id}>{group.name}</option>)}</select></label><p role="status">{count}편</p></div>
+    <div className="catalog-sections">{count ? groups.filter(group => group.guides.length).map(group => <section key={group.id} id={`category-${group.id}`} className={`catalog-section topic-${group.id}`} aria-labelledby={`heading-${group.id}`}><header><h2 id={`heading-${group.id}`}>{group.name}</h2><p>{group.description}</p></header><div className="catalog-grid">{group.guides.map(guide => <article id={guide.id} key={guide.id} className="guide-summary"><h3><Link to={guidePath(guide.id)}>{guide.title}</Link></h3><p>{guide.question}</p><Link className="text-button" to={guidePath(guide.id)}><BookOpen size={16} aria-hidden="true" /> 사례와 판단 기준 읽기 <ArrowRight size={16} aria-hidden="true" /></Link></article>)}</div></section>) : <section className="catalog-empty"><h2>맞는 가이드를 찾지 못했습니다.</h2><p>짧은 단어로 다시 찾거나 전체 주제에서 확인해 보세요. 장소명을 찾고 있다면 장소 검색을 이용할 수 있습니다.</p><button className="text-button" type="button" onClick={() => { setCategory(""); setQuery(""); }}><X size={16} aria-hidden="true" /> 조건 초기화</button><Link to="/pet-travel">장소 검색으로</Link></section>}</div>
+    <section className="library-method"><h2>읽고 나서 실제 후보에 적용하기</h2><div className="guide-actions"><Link to="/pet-travel/data-notes">실제 12곳 원문과 해석</Link><Link to="/pet-travel/guides/visit-checklist">출발 체크리스트</Link><Link to="/pet-travel">장소 검색·비교</Link><Link to="/contact">잘못된 정보 알리기</Link></div><p>가이드는 공공데이터 항목을 방문 결정 순서로 재구성한 편집 자료입니다. 가상 사례는 실제 후기와 구분하며, 전국 공통 입장 규정이나 의료·법률 판단을 대신하지 않습니다. <Link to="/data-sources/kto-pet-tour">출처와 이용 범위</Link></p></section>
+  </main>;
 }

@@ -1,3 +1,5 @@
+import { GUIDE_CATEGORIES, GUIDE_UPDATED, guidePath } from "./content/travel-guides";
+
 export const SITE_URL = "https://goodthingfor.com";
 export const SITE_NAME = "GoodThingz";
 export const LANGUAGE = "ko-KR";
@@ -8,14 +10,14 @@ export const DATA_SPEC_DATE = "2026-02-25";
 export const DEFAULT_SOCIAL_IMAGE_PATH = "/illustrations/pet-travel-studio-1536.webp";
 
 export const PAGE_LAST_MODIFIED = {
-	home: "2026-09-26",
+	home: "2026-10-01",
 	petTravel: "2026-09-26",
-	guides: "2026-09-26",
+	guides: "2026-10-01",
 	dataNotes: "2026-09-26",
 	visitChecklist: "2026-09-26",
 	dataSource: "2026-09-26",
-	about: "2026-09-26",
-	privacy: "2026-09-26",
+	about: "2026-10-01",
+	privacy: "2026-10-01",
 } as const;
 
 export const INDEX_PAGES = [
@@ -33,6 +35,8 @@ export const INDEX_PAGES = [
 	},
 	{ path: "/about", lastModified: PAGE_LAST_MODIFIED.about },
 	{ path: "/privacy", lastModified: PAGE_LAST_MODIFIED.privacy },
+	{ path: "/contact", lastModified: "2026-10-01" },
+	...GUIDE_CATEGORIES.flatMap(category => category.ids.map(id => ({ path: guidePath(id), lastModified: GUIDE_UPDATED }))),
 ] as const;
 
 export function canonicalUrl(path: string) {

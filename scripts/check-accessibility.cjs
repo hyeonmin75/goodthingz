@@ -10,7 +10,7 @@ async function main() {
       const page = await browser.newPage({ viewport: { width, height: 844 } });
       await page.route('https://pagead2.googlesyndication.com/**', r => r.fulfill({ contentType: 'application/javascript', body: '' }));
       await page.route('https://www.openstreetmap.org/**', r => r.fulfill({ contentType: 'text/html', body: '<html lang="ko"><title>시험 지도</title><body><main>시험 지도</main></body></html>' }));
-      for (const route of ['/', '/pet-travel', '/pet-travel/guides', '/pet-travel/data-notes', '/pet-travel/plan', '/privacy', '/about', '/data-sources/kto-pet-tour', '/pet-travel/guides/visit-checklist']) {
+      for (const route of ['/', '/pet-travel', '/pet-travel/guides', '/pet-travel/data-notes', '/pet-travel/plan', '/privacy', '/about', '/contact', '/pet-travel/guides/overnight', '/pet-travel/guides/budget', '/data-sources/kto-pet-tour', '/pet-travel/guides/visit-checklist']) {
         await page.goto(base + route);
         await page.locator('footer').waitFor();
         if (route.endsWith('/plan')) {

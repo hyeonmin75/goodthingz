@@ -4,6 +4,7 @@ export default [
 	index("routes/home.tsx"),
 	route("pet-travel", "routes/pet-travel.tsx"),
 	route("pet-travel/guides", "routes/travel-guides.tsx"),
+	route("pet-travel/guides/:guideSlug", "routes/travel-guide.tsx"),
 	route("pet-travel/data-notes", "routes/data-notes.tsx"),
 	route("pet-travel/plan", "routes/travel-plan.tsx"),
 	route(
@@ -15,6 +16,7 @@ export default [
 	route("pet-travel/compare", "routes/pet-travel-compare.tsx"),
 	route("data-sources/kto-pet-tour", "routes/data-source-kto-pet-tour.tsx"),
 	route("about", "routes/about.tsx"),
+	route("contact", "routes/contact.tsx"),
 	route("privacy", "routes/privacy.tsx"),
 	route("ads.txt", "routes/ads.txt.ts"),
 	route("robots.txt", "routes/robots.txt.ts"),

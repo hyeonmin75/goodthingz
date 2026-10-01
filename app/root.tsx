@@ -57,8 +57,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 						<Link reloadDocument={loadAdsenseCode} to="/pet-travel/guides">방문 가이드</Link>
 						<Link reloadDocument={loadAdsenseCode} to="/pet-travel/data-notes">데이터 분석·비교 사례</Link>
 						<Link reloadDocument={loadAdsenseCode} to="/pet-travel/plan">내 방문 계획</Link>
-						<Link reloadDocument={loadAdsenseCode} to="/about">서비스 소개·오류 제보</Link>
-						<Link reloadDocument={loadAdsenseCode} to="/privacy">개인정보 처리 안내</Link>
+						<Link reloadDocument={loadAdsenseCode} to="/about">굳띵즈 소개</Link>
+						<Link reloadDocument={loadAdsenseCode} to="/contact">문의·정보 수정</Link>
+						<Link reloadDocument={loadAdsenseCode} to="/privacy">개인정보처리방침</Link>
 						<Link reloadDocument={loadAdsenseCode} to="/data-sources/kto-pet-tour">데이터 출처·이용조건</Link>
 					</nav>
 				</footer>

@@ -7,8 +7,8 @@ const base = process.env.AUDIT_BASE_URL || 'http://127.0.0.1:8790';
 async function main() {
   const { emptyPlan, parsePlan, costSummary, planShareText } = await import('../app/plan.ts');
   const { TRAVEL_GUIDES } = await import('../app/content/travel-guides.ts');
-  assert.equal(TRAVEL_GUIDES.length, 10);
-  assert.equal(new Set(TRAVEL_GUIDES.map(g => g.id)).size, 10);
+  assert.equal(TRAVEL_GUIDES.length, 36);
+  assert.equal(new Set(TRAVEL_GUIDES.map(g => g.id)).size, 36);
   for (const guide of TRAVEL_GUIDES) {
     assert.equal(guide.steps.length, 3);
     assert.equal(guide.asks.length, 2);
@@ -38,9 +38,9 @@ async function main() {
       const errors = [];
       page.on('pageerror', e => errors.push(e.message));
       await page.goto(base + '/pet-travel/guides');
-      await page.locator('.decision-article').nth(9).waitFor();
-      assert.equal(await page.locator('.decision-article').count(), 10);
-      await page.locator('#dining').getByRole('button', { name: '문의 문장 복사' }).click();
+      assert.equal(await page.locator('.guide-summary').count(), 36);
+      await page.locator('#dining h3 a').click();
+      await page.getByRole('button', { name: '문의 문장 복사' }).click();
       assert.match(await page.evaluate(() => window.__copy), /실내/);
       await page.goto(base + '/pet-travel/plan');
       await page.getByLabel('직접 후보 이름 입력').fill('긴 이름을 가진 시험 후보와 함께하는 방문 계획');
@@ -95,7 +95,9 @@ async function main() {
     await page.goto(base + '/pet-travel');
     assert.ok(await page.locator('.place-card').count() > 0);
     await page.goto(base + '/pet-travel/guides');
-    assert.equal(await page.locator('.decision-article').count(), 10);
+    assert.equal(await page.locator('.guide-summary').count(), 36);
+    await page.locator('#dining h3 a').click();
+    assert.equal(await page.locator('.decision-steps li').count(), 3);
     await noJs.close();
     console.log(JSON.stringify({ unit: 'PASS', guides: TRAVEL_GUIDES.length, guideTextCharacters: TRAVEL_GUIDES.reduce((n, g) => n + JSON.stringify(g).length, 0), noJavaScriptSSR: 'PASS', browser: results }, null, 2));
   } finally { await browser.close(); }

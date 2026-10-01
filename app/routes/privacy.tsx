@@ -1,124 +1,26 @@
 import { Link } from "react-router";
-
+import { SiteNav } from "../components/site-nav";
+import { CONTACT_EMAIL, OPERATOR_NAME, POLICY_UPDATED } from "../site-info";
 import type { Route } from "./+types/privacy";
-import {
-	breadcrumbJsonLd,
-	canonicalUrl,
-	PAGE_LAST_MODIFIED,
-	socialMeta,
-	webPageJsonLd,
-} from "../seo";
+import { breadcrumbJsonLd, canonicalUrl, socialMeta, webPageJsonLd } from "../seo";
 
 export function meta({}: Route.MetaArgs) {
-	const title = "개인정보 처리 안내 - GoodThingz";
-	const description =
-		"GoodThingz의 위치 권한, 브라우저 저장, 공유 기능, Google 광고 데이터 처리, 공공데이터 API 처리 방식을 설명합니다.";
-
-	return [
-		{ title },
-		{ name: "description", content: description },
-		...socialMeta({ title, description, path: "/privacy" }),
-		{ name: "robots", content: "index,follow" },
-		{ tagName: "link", rel: "canonical", href: canonicalUrl("/privacy") },
-		{
-			"script:ld+json": [
-				webPageJsonLd({
-					name: title,
-					description,
-					path: "/privacy",
-					dateModified: PAGE_LAST_MODIFIED.privacy,
-				}),
-				breadcrumbJsonLd([
-					{ name: "홈", path: "/" },
-					{ name: "개인정보", path: "/privacy" },
-				]),
-			],
-		},
-	];
+  const title = "개인정보처리방침 | 굳띵즈 GoodThingz";
+  const description = "굳띵즈의 위치 조회, 검색, 기기 저장, 파일·공유, 이메일 문의, 외부 서비스·광고 처리 범위와 삭제·권한 철회 방법을 확인하세요.";
+  return [{ title }, { name: "description", content: description }, ...socialMeta({ title, description, path: "/privacy" }), { name: "robots", content: "index,follow" }, { tagName: "link", rel: "canonical", href: canonicalUrl("/privacy") }, { "script:ld+json": [webPageJsonLd({ name: title, description, path: "/privacy", dateModified: POLICY_UPDATED }), breadcrumbJsonLd([{ name: "홈", path: "/" }, { name: "개인정보처리방침", path: "/privacy" }])] }];
 }
 
 export default function Privacy() {
-	return (
-		<main className="content-page">
-			<nav className="top-nav" aria-label="주요 메뉴">
-				<Link reloadDocument className="brand" to="/">
-					<span className="brand-mark" aria-hidden="true">
-						G
-					</span>
-					<span>GoodThingz</span>
-				</Link>
-				<div className="nav-links">
-					<Link to="/pet-travel">반려동물 여행</Link>
-					<Link to="/data-sources/kto-pet-tour">데이터 출처</Link>
-					<Link to="/about">소개</Link>
-				</div>
-			</nav>
-			<nav className="breadcrumb" aria-label="현재 위치">
-				<Link reloadDocument to="/">홈</Link>
-				<span aria-hidden="true">/</span>
-				<span>개인정보</span>
-			</nav>
-			<section className="content-hero" aria-labelledby="privacy-title">
-				<p className="eyebrow">개인정보 처리 안내</p>
-				<h1 id="privacy-title">위치와 저장 정보는 필요한 만큼만 사용합니다.</h1>
-				<p className="lead">
-					핵심 기능은 로그인 없이 이용할 수 있습니다. 위치 사용 여부는 직접 선택하며, 저장한 장소는 사용 중인 브라우저에서 관리합니다.
-				</p>
-			</section>
-			<section className="content-section">
-				<h2>위치 권한</h2>
-				<p>
-					내 위치 조회를 누르면 사용 목적과 전달 대상을 먼저 안내합니다. 이에 동의하고 브라우저 권한을 허용하면 좌표를 받아 주변 장소 검색과 지도 표시에 사용합니다. 좌표는 HTTPS 연결로 GoodThingz의 Cloudflare 서버를 거쳐 한국관광공사에 전달됩니다. 지도에 현재 위치를 표시할 때는 OpenStreetMap에, 길찾기를 열 때는 지도 및 경로 제공자에 출발지와 목적지가 전달됩니다.
-				</p>
-				<p>현재 위치 자체는 브라우저 저장소에 저장하지 않고 현재 화면에서 사용합니다. 새로고침하거나 화면을 닫으면 다시 조회해야 합니다. 위치는 광고 타겟팅에 사용하지 않습니다. 동의를 취소해도 장소명 검색은 가능하며, 브라우저의 사이트 설정에서 위치 권한을 철회할 수 있습니다.</p>
-			</section>
-			<section className="content-section">
-				<h2>브라우저 저장</h2>
-				<p>
-					저장한 장소의 이름, 주소, 장소 좌표, 이미지 주소와 조회 당시 거리 등은 같은 브라우저에서 다시 보기 위해 기기의 사이트 저장공간에 보관됩니다. 서버 계정으로 동기화하지 않습니다. 별도 자동 만료는 없으며 장소의 저장을 해제하거나 브라우저 설정에서 이 사이트의 데이터를 삭제하면 지울 수 있습니다.
-				</p>
-			</section>
-			<section className="content-section">
-				<h2>공유 기능</h2>
-				<p>
-					공유 버튼은 선택한 장소명, 주소와 서비스 링크를 텍스트로 전달합니다. 현재 위치와 현재 위치에서의 거리는 공유 내용에서 제외합니다. 기기의 공유 화면에서 사용자가 선택한 앱이나 상대에게 전달되며, 공유 기능을 지원하지 않으면 클립보드에 복사합니다.
-				</p>
-			</section>
-			<section className="content-section">
-				<h2>방문 계획과 비용 메모</h2>
-				<p>내 방문 계획의 장소명·확인 상태·방문일·개인 메모·직접 입력한 비용은 저장 버튼을 누르면 이 브라우저에 저장됩니다. 서버 계정으로 전송하거나 자동 동기화하지 않습니다. 계획 전체 삭제 또는 브라우저의 사이트 데이터 삭제로 지울 수 있습니다.</p>
-				<p>계획 파일에는 메모와 예산도 포함됩니다. 파일 내보내기·불러오기는 이 기기에서 처리하며 서버에 업로드하지 않습니다. 공유 미리보기에서는 개인 메모·예산·현재 위치를 제외하고 장소와 확인 상태만 전달합니다. 방문 예정일은 직접 선택한 경우에만 포함됩니다. 공유받은 사람이나 직접 전송한 파일은 사이트에서 회수할 수 없습니다.</p>
-				<p>별도의 비교표(CSV)에는 장소명·공개 장소 주소·직접 기록한 확인 상태만 포함하며 개인 메모·예산·방문 날짜·현재 위치는 제외합니다. 확인 현황의 숫자와 남은 일 목록은 이 기기의 계획에서 계산하며 광고나 서버 분석에 전달하지 않습니다.</p>
-			</section>
-			<section className="content-section">
-				<h2>Google 광고 서비스</h2>
-				<p>
-					홈페이지에는 사이트 연결 확인을 위한 Google AdSense 스크립트와 계정 메타 태그가 있으며, ads.txt도 제공합니다. 스크립트를 불러오면 Google에 IP 주소·브라우저 정보 등 통신에 필요한 정보가 전달될 수 있습니다. 메타 태그와 ads.txt 자체는 광고 요청을 보내지 않습니다. 검색·개인 방문 계획·오류 페이지에는 이 스크립트를 넣지 않습니다.
-				</p>
-				<p>
-					광고 표시는 Google의 승인과 계정의 자동 광고 설정 등에 따라 달라집니다. 광고를 운영할 때는 필요한 동의 절차를 적용해야 합니다. Google과 광고 파트너는 광고 제공·측정·부정 사용 방지 및 동의에 따른 개인화를 위해 브라우저에 쿠키를 설치하거나 읽고, 웹 비콘, IP 주소, 기기 식별자 등을 처리할 수 있습니다. Google의 실제 데이터 이용과 사용자 선택에 관한 안내는 다음 링크에서 확인할 수 있습니다.
-				</p>
-				<a
-					className="text-button"
-					href="https://policies.google.com/technologies/partner-sites?hl=ko"
-					target="_blank"
-					rel="noreferrer"
-				>
-					Google 광고 데이터 처리 안내
-				</a>
-				<p><a href="https://myadcenter.google.com/" rel="noreferrer" target="_blank">Google 광고 개인화 설정</a></p>
-			</section>
-			<section className="content-section">
-				<h2>외부 서비스와 접속 기록</h2>
-				<p>
-					사이트 전송은 Cloudflare, 글꼴 제공은 jsDelivr, 지도는 OpenStreetMap, 장소 이미지 제공은 해당 이미지 서버를 사용합니다. 이 리소스를 불러오면 제공자에게 IP 주소와 브라우저 정보 등 통신에 필요한 정보가 전달될 수 있습니다. 외부 링크를 열면 방문한 서비스의 처리방침이 적용됩니다.
-				</p>
-				<p>검색어와 위치를 포함한 요청 주소가 인프라 제공자의 접속·보안 기록에 포함될 수 있습니다. GoodThingz는 별도 사용자 계정이나 위치 이력 데이터베이스를 운영하지 않지만, 외부 제공자의 기록 보관기간은 각 제공자의 정책과 설정에 따릅니다. 확인하지 않은 보관기간이나 완전한 미수집을 보장하지 않습니다.</p>
-			</section>
-			<section className="content-section">
-				<h2>문의와 변경 안내</h2>
-				<p>운영: GoodThingz · 시행일: 2026년 9월 5일 · 수정일: 2026년 9월 23일. <Link to="/about">운영 안내와 오류 제보</Link>에서 연락 경로를 확인할 수 있습니다. 공개 제보 공간에는 실제 위치, 연락처나 인증정보를 작성하지 마세요.</p>
-			</section>
-		</main>
-	);
+  return <main className="content-page support-page"><SiteNav /><nav className="breadcrumb" aria-label="현재 위치"><Link reloadDocument to="/">홈</Link><span aria-hidden="true">/</span><span>개인정보처리방침</span></nav><header className="content-hero"><p className="eyebrow">PRIVACY</p><h1>개인정보처리방침</h1><p className="lead">어떤 정보가 어디로 가는지, 어떻게 지울 수 있는지 안내합니다.</p><p>운영·문의 담당: {OPERATOR_NAME} · <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a><br />최초 시행 2026-09-05 · 현행 방침 적용 <time dateTime={POLICY_UPDATED}>{POLICY_UPDATED}</time></p></header>
+    <nav className="document-index" aria-label="개인정보처리방침 목차"><a href="#collection">처리 항목</a><a href="#location">위치 조회</a><a href="#storage">저장·삭제</a><a href="#sharing">공유·파일</a><a href="#email">이메일 문의</a><a href="#providers">외부 서비스</a><a href="#ads">광고</a><a href="#rights">권리·문의</a></nav>
+    <section className="content-section" id="collection"><h2>1. 처리 목적과 항목</h2><p>GoodThingz는 회원가입·결제·구독을 운영하지 않으며, 이용자의 계정·정확한 위치 이력을 별도 데이터베이스로 보관하지 않습니다. 다만 사이트 접속과 외부 서비스 호출에는 통신 정보가 필요합니다. ‘회원가입이 없다’는 이유로 모든 정보가 전혀 처리되지 않는다는 뜻은 아닙니다.</p><div className="policy-table-wrap" role="region" aria-label="처리 항목과 저장 위치" tabIndex={0}><table><caption>기능별 처리 범위</caption><thead><tr><th scope="col">이용 상황</th><th scope="col">처리 항목과 목적</th><th scope="col">처리 위치·보관 기준</th></tr></thead><tbody><tr><th scope="row">장소 검색</th><td>검색어·유형·반경 등 조회 조건</td><td>Cloudflare 서버를 거쳐 한국관광공사에 전달. 요청·보안 기록은 제공자 정책과 설정 적용</td></tr><tr><th scope="row">내 위치 조회</th><td>동의한 좌표로 주변 검색·지도 표시</td><td>현재 화면에서 사용. 정확한 현재 좌표를 기기 저장소에 따로 저장하지 않음</td></tr><tr><th scope="row">장소 저장</th><td>장소명·공개 주소·장소 좌표·이미지·조회 당시 거리</td><td>사용 중인 브라우저. 저장 해제나 사이트 데이터 삭제 전까지</td></tr><tr><th scope="row">방문 계획</th><td>후보·체크·방문일·메모·직접 입력한 비용</td><td>저장 버튼을 누르면 이 브라우저에 보관. 자동 서버 동기화 없음</td></tr><tr><th scope="row">문의 초안 작성</th><td>선택한 문의 유형·관련 페이지·입력 문장</td><td>현재 화면에서만 처리. 입력만으로 전송·저장하지 않음</td></tr><tr><th scope="row">이메일 전송</th><td>발신 주소·이름(메일에 포함된 경우)·문의 내용·사용자가 보낸 첨부</td><td>운영자 Gmail. 문의 처리 목적 달성 시 불필요한 내용 삭제</td></tr></tbody></table></div></section>
+    <section className="content-section" id="location"><h2>2. 위치정보와 권한 선택</h2><p>내 위치 조회를 누르면 사용 목적과 전달 대상을 먼저 안내합니다. 이용자가 동의하고 브라우저 권한을 허용하면 좌표를 받아 주변 검색과 지도 표시에 사용합니다. 좌표는 암호화된 연결로 Cloudflare를 거쳐 한국관광공사에 전달됩니다. 현재 위치를 포함한 지도를 불러올 때 OpenStreetMap에 지도 범위가 전달될 수 있고, 외부 길찾기를 열면 선택한 지도 서비스에 출발지·목적지가 전달됩니다.</p><p>현재 위치 자체는 기기 저장소에 보관하지 않으며 새로고침하거나 화면을 닫으면 다시 조회해야 합니다. 위치는 사이트의 광고 타겟팅에 사용하지 않습니다. 동의를 거절하거나 브라우저 사이트 설정에서 위치 권한을 철회해도 키워드 검색과 가이드는 이용할 수 있습니다.</p></section>
+    <section className="content-section" id="storage"><h2>3. 기기 저장과 삭제 방법</h2><p>장소 저장과 방문 계획은 사용 중인 기기·브라우저에만 보관합니다. 자동 만료는 없으며 운영자가 다른 기기의 계획을 조회·복구·동기화할 수 없습니다. 계획의 확인 수와 비용 합계는 기기 안에서 계산하며 사용자 메모·예산을 별도 분석 서버에 전송하지 않습니다.</p><ol><li>장소는 검색 화면에서 해당 후보의 저장을 해제합니다.</li><li>계획은 <Link to="/pet-travel/plan">내 방문 계획</Link>의 전체 삭제를 이용합니다. 필요한 경우 먼저 본인 보관용 파일을 내보내세요.</li><li>기기의 브라우저 설정에서 goodthingfor.com의 사이트 데이터를 삭제하면 저장한 장소와 계획을 함께 지울 수 있습니다.</li></ol><p>기기 저장이 차단되거나 용량이 부족하면 저장에 실패할 수 있습니다. 저장 실패 안내가 나온 경우 화면 입력이 다음 방문까지 보관됐다고 보지 마세요. 다른 사람과 기기를 공유할 때는 사용 후 저장 데이터와 내려받은 파일을 함께 확인하세요.</p></section>
+    <section className="content-section" id="sharing"><h2>4. 공유·다운로드·파일 복구</h2><p>장소 공유는 이름·공개 주소·서비스 링크를 전달하며 현재 위치와 조회 거리 등은 제외합니다. 방문 계획의 공유 미리보기는 개인 메모·예산·현재 위치를 제외하고 후보와 확인 상태를 보여줍니다. 방문일은 직접 선택한 경우만 포함합니다. 사용자가 선택한 앱이나 상대에게 전송되며 공유 기능이 없으면 클립보드 복사를 이용합니다.</p><p>비교표(CSV)에는 장소명·공개 주소·확인 상태만 포함하고 메모·예산·방문 날짜는 제외합니다. 반면 계획 전체 파일에는 메모·예산도 포함되므로 개인 백업용과 공개 공유용을 구분해야 합니다. 파일 내보내기·불러오기는 기기에서 처리하고 서버에 업로드하지 않습니다.</p><p>주소 칸 등에 사용자가 직접 적은 사적인 정보까지 자동으로 알아서 지우지는 않습니다. 보내기 전에 내용을 확인하세요. 전달한 파일·메시지·클립보드 내용은 사이트가 회수하지 못하며, 사이트 데이터를 삭제해도 이미 내려받은 파일은 별도로 삭제해야 합니다.</p></section>
+    <section className="content-section" id="email"><h2>5. 문의 이메일 처리</h2><p><Link to="/contact">문의 페이지</Link>의 초안은 전송 버튼이 있는 접수 시스템이 아닙니다. 이메일 앱에서 이용자가 직접 보내는 시점에 발신 주소·메일 내용·첨부가 운영자의 Gmail에 전달됩니다. 회신과 정보 수정·기능 문제·개인정보 요청 처리에 필요한 범위로 이용하며 광고 발송용 목록으로 사용하지 않습니다.</p><p>문의 목적을 달성하면 불필요한 개인정보와 첨부를 운영자가 삭제합니다. 분쟁이나 법령상 보존 사유가 있으면 필요한 항목과 기간을 구분해 보관하며, 관련 요청 시 안내합니다. 메일이 자동으로 일정 일수 뒤 삭제되는 기능은 운영하지 않습니다. 공개 제보인 GitHub Issues는 이메일과 다른 서비스이고 제보 내용이 공개될 수 있습니다.</p><p>신분증·의료 기록·결제정보·비밀키·정확한 현재 위치는 먼저 보내지 마세요. 요청 확인에 자료가 필요한 경우 최소 범위를 별도로 안내합니다. 기기 안에만 있는 계획은 운영자가 이메일 요청으로 대신 삭제할 수 없으므로 위 기기 삭제 방법을 이용해 주세요.</p></section>
+    <section className="content-section" id="providers"><h2>6. 외부 서비스와 접속 정보</h2><p>화면 전송·보안·서버 실행은 Cloudflare, 공공데이터 조회는 한국관광공사, 글꼴은 jsDelivr, 지도는 OpenStreetMap, 장소 사진은 제공기관 등의 이미지 서버를 이용합니다. 리소스를 불러올 때 IP 주소·브라우저 정보·요청 주소 같은 통신 정보가 각 제공자에게 전달될 수 있습니다. 외부 지도를 열거나 메일을 보낼 때는 선택한 서비스의 처리방침도 적용됩니다.</p><p>검색어와 위치를 포함한 요청 주소가 인프라의 접속·보안 기록에 포함될 수 있습니다. Cloudflare의 페이지 성능 측정도 배포 설정에 따라 수행될 수 있습니다. GoodThingz가 사용자별 위치 이력 데이터베이스를 운영하지 않는 것과 외부 제공자의 통신 기록이 없는 것은 다릅니다. 제공자별 보관기간·처리 국가·계정 설정을 일괄적으로 확정하거나 완전한 미수집을 보장하지 않습니다.</p><p>외부 제공자의 시스템은 국외에서 처리될 수 있습니다. 위치 권한을 거절하거나 외부 지도·이메일 전송을 선택하지 않을 수 있지만, 사이트 전송·글꼴·이미지 등 일부 리소스를 차단하면 표시가 제한될 수 있습니다. 상세 처리 범위는 각 제공자의 정책과 아래 연락처로 확인할 수 있습니다.</p><ul className="source-list"><li><a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noreferrer">Cloudflare 개인정보 처리 안내</a> · <a href="https://developers.cloudflare.com/web-analytics/about/" target="_blank" rel="noreferrer">페이지 성능 측정 안내</a></li><li><a href="https://policies.google.com/privacy?hl=ko" target="_blank" rel="noreferrer">Google 개인정보처리방침: Gmail 등</a></li><li><Link to="/data-sources/kto-pet-tour">한국관광공사 데이터 이용 범위</Link></li></ul></section>
+    <section className="content-section" id="ads"><h2>7. Google 광고와 이용자 선택</h2><p>홈페이지에는 요청한 AdSense 사이트 연결 코드와 계정 확인 메타 태그가 있으며 ads.txt를 제공합니다. 메타 태그와 ads.txt 자체는 광고 요청을 보내지 않지만 스크립트가 실행되면 Google에 통신 정보가 전달될 수 있습니다. 개인 방문 계획·검색 조건 화면·문의·오류 화면에는 광고 스크립트를 넣지 않습니다.</p><p>실제 광고 노출은 Google 승인과 계정 설정에 따라 달라집니다. Google과 광고 파트너는 광고 제공·측정·부정 이용 방지 및 필요한 동의에 따른 개인화를 위해 쿠키·웹 비콘·IP 주소·기기 식별자 등을 처리할 수 있습니다. 관련 지역에서 요구되는 동의 절차와 광고 설정은 별도로 적용·점검해야 하며, 이 방침만으로 동의가 완료되는 것은 아닙니다.</p><p><a href="https://policies.google.com/technologies/partner-sites?hl=ko" target="_blank" rel="noreferrer">Google 광고 데이터 처리 안내</a> · <a href="https://myadcenter.google.com/" target="_blank" rel="noreferrer">Google 광고 개인화 설정</a>. 브라우저에서 쿠키를 차단·삭제할 수 있으나 광고·로그인 등 외부 서비스 기능이 달라질 수 있습니다.</p></section>
+    <section className="content-section" id="rights"><h2>8. 열람·정정·삭제·처리 관련 문의</h2><p>문의 담당은 {OPERATOR_NAME}, 연락처는 <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>입니다. 운영자가 받은 문의 기록이나 사이트에 공개된 본인 정보의 열람·정정·삭제·처리 관련 요청을 이 경로로 전달해 주세요. 필요한 본인 확인은 목적에 맞는 최소 범위로 안내하며 신분증을 선제적으로 요구하지 않습니다.</p><p>기기 저장 데이터는 이용자가 직접 삭제할 수 있습니다. 외부 서비스의 기록은 해당 제공자의 권리 행사 경로를 이용해야 할 수 있으며, 요청 대상과 처리 주체를 구분해 안내합니다. 계정·결제·아동 회원가입 절차는 운영하지 않습니다. 보호자가 아동의 정보 처리와 관련해 우려하는 경우에도 위 이메일로 문의할 수 있습니다.</p><p>독립적인 상담이 필요하면 <a href="https://privacy.kisa.or.kr/" target="_blank" rel="noreferrer">개인정보침해신고센터</a> 또는 <a href="https://www.kopico.go.kr/" target="_blank" rel="noreferrer">개인정보분쟁조정위원회</a>의 공식 안내를 확인할 수 있습니다.</p></section>
+    <section className="content-section"><h2>9. 보호 조치와 방침 변경</h2><p>사이트와 데이터 요청은 암호화된 연결을 사용하고, 공공데이터 인증키는 서버의 비밀 설정에 두며 브라우저에 제공하지 않습니다. 별도의 사용자 계정 비밀번호를 수집하지 않습니다. 다만 이용자가 직접 내려받거나 전송한 파일의 보관과 공유 범위도 함께 관리해야 합니다.</p><p><time dateTime={POLICY_UPDATED}>{POLICY_UPDATED}</time> 개정에서는 운영자 연락처, 문의 이메일의 처리, 공유 파일별 포함 항목, 기기 삭제 방법과 외부 처리 범위를 보완했습니다. 항목·목적·처리 방식이 바뀌면 이 문서의 적용일과 변경 내용을 갱신하고, 별도 동의가 필요한 경우 그 절차를 구분합니다.</p><Link to="/contact">개인정보 문의하기</Link></section>
+  </main>;
 }

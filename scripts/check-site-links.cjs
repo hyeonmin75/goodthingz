@@ -7,13 +7,15 @@ async function main() {
   try {
     const page = await browser.newPage({ javaScriptEnabled: false });
     await page.route('https://pagead2.googlesyndication.com/**', r => r.abort());
+    await page.route('**/*', route => ['image', 'font', 'stylesheet', 'media'].includes(route.request().resourceType()) ? route.abort() : route.continue());
     const xml = await (await fetch(base + '/sitemap.xml')).text();
     const urls = await page.evaluate(text => [...new DOMParser().parseFromString(text, 'application/xml').querySelectorAll('loc')].map(node => node.textContent), xml);
-    assert.equal(urls.length, 8);
+    assert.equal(urls.length, 45);
+    assert.equal(new Set(urls).size, urls.length);
     const documents = new Map();
     for (const url of [...urls, 'https://goodthingfor.com/pet-travel/plan']) {
       const route = new URL(url).pathname;
-      const response = await page.goto(base + route);
+      const response = await page.goto(base + route, { waitUntil: 'domcontentloaded' });
       assert.equal(response.status(), 200);
       const document = await page.evaluate(() => ({
         title: document.title, description: document.querySelector('meta[name="description"]')?.content,

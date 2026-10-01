@@ -12,7 +12,7 @@ async function main() {
   const robots = await (await fetch(base + '/robots.txt')).text();
   assert.match(robots, /Allow: \/\n/);
   assert.doesNotMatch(robots, /Disallow: \/(?:ads\.txt)?\s*$/m);
-  for (const route of ['/', '/?keyword=test', '/pet-travel', '/pet-travel?keyword=test', '/pet-travel/plan', '/pet-travel/guides', '/pet-travel/data-notes', '/pet-travel/guides/visit-checklist', '/data-sources/kto-pet-tour', '/about', '/privacy', '/adsense-audit-missing']) {
+  for (const route of ['/', '/?keyword=test', '/pet-travel', '/pet-travel?keyword=test', '/pet-travel/plan', '/pet-travel/guides', '/pet-travel/guides/room-booking', '/pet-travel/data-notes', '/pet-travel/guides/visit-checklist', '/data-sources/kto-pet-tour', '/about', '/privacy', '/contact', '/contact?topic=privacy', '/adsense-audit-missing']) {
     const response = await fetch(base + route);
     assert.equal(response.status, route.endsWith('missing') ? 404 : 200);
     const html = await response.text();
@@ -39,7 +39,7 @@ async function main() {
         contentType: 'application/javascript', body: 'window.__adsenseAuditLoaded = true;',
       }));
       await page.route('https://**.doubleclick.net/**', route => route.abort());
-      for (const selector of ['.top-nav a[href="/pet-travel/plan"]', 'footer a[href="/privacy"]', '.home-guide']) {
+      for (const selector of ['.top-nav a[href="/pet-travel/plan"]', 'footer a[href="/privacy"]', '.home-guide h3 a']) {
         await page.goto(base + '/');
         await page.waitForFunction(() => window.__adsenseAuditLoaded === true);
         assert.equal(await page.locator(`head script[src="${src}"]`).count(), 1);

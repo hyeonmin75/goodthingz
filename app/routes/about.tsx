@@ -1,112 +1,22 @@
 import { Link } from "react-router";
 import { SiteNav } from "../components/site-nav";
-
+import { CONTACT_EMAIL, OPERATOR_NAME } from "../site-info";
 import type { Route } from "./+types/about";
-import {
-	breadcrumbJsonLd,
-	canonicalUrl,
-	PAGE_LAST_MODIFIED,
-	socialMeta,
-	webPageJsonLd,
-} from "../seo";
+import { breadcrumbJsonLd, canonicalUrl, PAGE_LAST_MODIFIED, socialMeta, webPageJsonLd } from "../seo";
 
 export function meta({}: Route.MetaArgs) {
-	const title = "GoodThingz 소개 | 반려동물 여행 자료의 작성·검증 원칙";
-	const description =
-		"반려동물 여행 자료의 출처, 독립 운영과 편집 방식, 실제 조사와 가상 예시의 구분, 수정 내역과 오류 제보 방법을 공개합니다.";
-
-	return [
-		{ title },
-		{ name: "description", content: description },
-		...socialMeta({ title, description, path: "/about" }),
-		{ name: "robots", content: "index,follow" },
-		{ tagName: "link", rel: "canonical", href: canonicalUrl("/about") },
-		{
-			"script:ld+json": [
-				webPageJsonLd({
-					name: title,
-					description,
-					path: "/about",
-					dateModified: PAGE_LAST_MODIFIED.about,
-				}),
-				breadcrumbJsonLd([
-					{ name: "홈", path: "/" },
-					{ name: "소개", path: "/about" },
-				]),
-			],
-		},
-	];
+  const title = "굳띵즈 소개·작성 원칙 | GoodThingz 반려동물 여행";
+  const description = "굳띵즈가 반려동물 여행 자료를 선택·해석·검수하는 방법, 운영자와 연락처, 원자료·가상 사례·AI 보조 작성의 구분, 정정 원칙을 공개합니다.";
+  return [{ title }, { name: "description", content: description }, ...socialMeta({ title, description, path: "/about" }), { name: "robots", content: "index,follow" }, { tagName: "link", rel: "canonical", href: canonicalUrl("/about") }, { "script:ld+json": [{ ...webPageJsonLd({ name: title, description, path: "/about", dateModified: PAGE_LAST_MODIFIED.about }), "@type": "AboutPage" }, breadcrumbJsonLd([{ name: "홈", path: "/" }, { name: "소개", path: "/about" }])] }];
 }
 
 export default function About() {
-	return (
-		<main className="content-page">
-			<SiteNav />
-			<nav className="breadcrumb" aria-label="현재 위치">
-				<Link reloadDocument to="/">홈</Link>
-				<span aria-hidden="true">/</span>
-				<span>소개</span>
-			</nav>
-			<section className="content-hero" aria-labelledby="about-title">
-				<p className="eyebrow">서비스 소개</p>
-				<h1 id="about-title">GoodThingz의 자료는 이렇게 만듭니다.</h1>
-				<p className="lead">
-					반려동물과 갈 장소의 동반 조건을 읽고, 확인한 사실로 방문을 준비하는 독립 서비스입니다.
-				</p>
-			</section>
-			<section className="content-section">
-				<h2>운영 원칙</h2>
-				<p>
-					검색·비교·계산·저장 기능은 로그인 없이 무료로 이용합니다. 예약을 중개하거나 장소의 입장을 보증하지 않습니다. 이번 데이터 분석에 수록된 장소는 유형별 수정일 기준으로 선택했으며, 협찬 순위나 현장 방문 추천이 아닙니다.
-				</p>
-			</section>
-			<section className="content-section">
-				<h2>현재 제공 서비스</h2>
-				<p>GoodThingz는 한국관광공사나 Google이 운영하거나 공식 보증하는 사이트가 아닌 독립 서비스입니다. 데이터 제공기관과 사이트 운영자는 다릅니다.</p>
-				<p>
-					첫 서비스는 한국관광공사 반려동물 동반여행 공공데이터를 활용한
-					반려동물 동반 장소 검색입니다. 위치, 장소 유형, 지도, 동반 조건,
-					방문 전 확인 정보를 함께 보여줍니다.
-				</p>
-				<Link className="button button-primary" to="/pet-travel">
-					반려동물 동반 장소 찾기
-				</Link>
-			</section>
-			<section className="content-section">
-				<h2>작성·수정 원칙</h2>
-				<p>장소의 주소·동반 안내·방문 정보는 한국관광공사 자료를 정리한 것입니다. 상황별 가이드, 문의 문장과 비교 예시는 GoodThingz가 작성한 판단 보조 자료이며, 직접 방문한 후기나 인기 순위가 아닙니다. 가상 예시는 실제 장소 정보와 구분해 표시합니다.</p>
-				<p>안내가 있다는 사실만으로 입장 가능을 확정하지 않습니다. 빠진 항목은 정보 없음으로 표시하고, 자료를 불러온 시각·원본 수정일·콘텐츠 수정일을 구분합니다. 제공기관의 갱신 주기는 개별 장소의 현장 검증 주기를 뜻하지 않습니다.</p>
-			</section>
-			<section className="content-section">
-				<h2>운영과 데이터 오류 제보</h2>
-				<p>
-					GoodThingz 운영자는 공식 데이터의 출처와 한계를 공개하고, 잘못된
-					표시나 개선 제안을 검토합니다. 장소 정보는 제공기관의 원본 데이터에
-					따라 달라질 수 있으므로, 오류 제보에는 장소명과 확인한 내용을 함께
-					남겨 주세요.
-				</p>
-				<a
-					className="text-button"
-					href="https://github.com/hyeonmin75/goodthingz/issues"
-					target="_blank"
-					rel="noreferrer"
-				>
-					데이터 오류와 개선 제안 남기기
-				</a>
-				<p className="muted-copy">
-					공개 제보 공간에는 전화번호, 현재 위치, 인증키 같은 개인정보를 남기지
-					마세요. 제보 작성에는 GitHub 로그인이 필요하며, 장소 검색과 비교에는 로그인이 필요하지 않습니다.
-				</p>
-			</section>
-			<section className="content-section">
-				<h2>원자료와 편집 내용을 분리합니다.</h2>
-				<ol className="decision-steps"><li><h3>대상과 날짜를 정합니다.</h3><p>분석 전에 표본 선택 방법과 조회 시점을 정합니다. 일부 자료를 전국 통계로 확대하거나, 자료를 읽은 날을 현장 검증일로 바꾸지 않습니다.</p></li><li><h3>원문과 나의 해석을 나눕니다.</h3><p>동물 종류·구역·장비에 적힌 사실을 먼저 보존하고, 그 사실에서 이용자가 판단할 수 있는 범위만 설명합니다. 빈칸과 조건 없는 허용은 다른 상태로 다룹니다.</p></li><li><h3>다음 행동을 연결합니다.</h3><p>아직 답이 없는 부분은 문의 문장으로 남깁니다. 검색의 현재 자료, 비교, 방문 계획과 연결하되 자동 입장 판정이나 근거 없는 추천 점수는 제공하지 않습니다.</p></li></ol>
-			</section>
-			<section className="content-section">
-				<h2>최근 편집 내역</h2>
-				<p><time dateTime="2026-09-26">2026-09-26</time> · 관광지·문화시설·숙박·음식점 12곳을 조사한 <Link className="text-button" to="/pet-travel/data-notes">동반 조건 분석</Link>을 발행했습니다. 표본별 원문·해석·질문과 세 가지 일정 비교를 공개하고, 장소별 문의 초안과 추가비 단위 계산을 추가했습니다.</p>
-				<p>가이드의 가상 예시는 실제 후기나 조사 실적에 포함하지 않습니다. 내용이 잘못된 경우 위 오류 제보 경로로 장소명·자료 번호·틀린 항목·공개 근거 링크를 알려주세요. 인증서나 개인 연락처는 공개 제보에 올리지 마세요.</p>
-			</section>
-		</main>
-	);
+  return <main className="content-page support-page"><SiteNav /><nav className="breadcrumb" aria-label="현재 위치"><Link reloadDocument to="/">홈</Link><span aria-hidden="true">/</span><span>소개</span></nav><header className="content-hero"><p className="eyebrow">ABOUT GOODTHINGZ</p><h1>함께 갈 수 있는 이유를 확인합니다.</h1><p className="lead">반려동물 여행의 ‘가능’이라는 한 단어를, 우리에게 맞는 조건으로 읽습니다.</p><p>운영자: {OPERATOR_NAME} · 서비스: GoodThingz · <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></p></header>
+    <nav className="document-index" aria-label="소개 목차"><a href="#purpose">서비스의 목적</a><a href="#editorial">작성 원칙</a><a href="#responsibility">책임과 범위</a><a href="#corrections">정정 절차</a><a href="#history">변경 기록</a></nav>
+    <section className="content-section" id="purpose"><h2>장소를 찾은 다음에 남는 질문을 해결합니다.</h2><p>반려동물 동반 목록에 있더라도 원하는 실내 구역, 특정 객실, 방문 날짜와 동물 조건까지 맞는 것은 아닙니다. 굳띵즈는 검색 시간을 줄이는 데서 그치지 않고, 서로 다른 후보를 같은 기준으로 비교하고 확인되지 않은 내용을 남길 수 있도록 자료와 도구를 연결합니다.</p><div className="editorial-principles"><div><h3>조건을 읽습니다.</h3><p>36편의 주제별 가이드에서 방문 목적에 필요한 질문을 고릅니다. 빈 정보를 허용이나 금지로 바꾸지 않습니다.</p><Link to="/pet-travel/guides">주제별 가이드</Link></div><div><h3>원문과 대조합니다.</h3><p>실제 장소 12곳의 분석에서 원문·해석·남은 질문을 구분합니다. 표본을 전국 통계나 인기 순위로 확대하지 않습니다.</p><Link to="/pet-travel/data-notes">자료 읽기 사례</Link></div><div><h3>내 계획에 적용합니다.</h3><p>현재 검색 자료와 직접 확인한 답을 나란히 보고, 미확인 항목과 비용을 기록합니다. 체크는 사용자의 기록입니다.</p><Link to="/pet-travel/plan">방문 계획</Link></div></div></section>
+    <section className="content-section" id="editorial"><h2>어떤 자료를 어떻게 작성하나요?</h2><ol className="decision-steps"><li><h3>독립적인 사용자 질문을 정합니다.</h3><p>지역명이나 검색어만 바꾼 글을 만들지 않습니다. 혼자 주문하기, 조식 이용, 객실별 추가비처럼 확인할 근거와 다음 행동이 다른 문제를 고릅니다. 같은 문제를 반복하는 내용은 통합하거나 수정합니다.</p></li><li><h3>사실·해석·예시를 구분합니다.</h3><p>장소 정보는 한국관광공사 원자료, 판단 가이드는 이를 이용 상황에 재구성한 편집 자료입니다. 실제 분석에는 조회 시점과 표본 선정 방법을 적습니다. 가상 예시와 계산은 실제 후기·현장 방문·시장 평균처럼 표시하지 않습니다.</p></li><li><h3>출처와 빠진 정보를 함께 표시합니다.</h3><p>목록과 상세 자료의 주소·운영·구역·장비 조건을 대조하고 중복 문장은 정리합니다. 실시간 재고, 가격, 통제, 입장 가능성처럼 확인하지 못한 항목은 추측으로 채우지 않습니다. 글의 수정일과 장소의 현장 확인일은 다릅니다.</p></li><li><h3>자동화는 작성·검사의 보조로 사용합니다.</h3><p>콘텐츠 구성과 소프트웨어 제작에 AI 도구를 활용합니다. AI가 직접 현장 방문을 했거나 자격 있는 전문가가 검수했다고 주장하지 않습니다. 생성 일러스트는 실제 장소 사진과 구분합니다. 글 수나 길이 자체를 품질 또는 검색·광고 승인 보장으로 제시하지 않습니다.</p></li><li><h3>읽은 뒤 할 수 있는 행동을 연결합니다.</h3><p>각 글의 비교 기준과 문의 질문을 관련 글, 실제 데이터 사례, 장소 검색, 방문 계획에 연결합니다. 출처를 그대로 나열하거나 다른 글의 문장을 바꾸어 쓰는 것만으로 발행을 완료했다고 보지 않습니다.</p></li></ol><p><Link to="/data-sources/kto-pet-tour">제공기관·원자료 범위·이용조건 자세히 보기</Link></p></section>
+    <section className="content-section" id="responsibility"><h2>운영 책임과 제공하지 않는 것</h2><p>{OPERATOR_NAME}는 이 사이트의 편집 내용과 화면·기능을 관리하는 독립 운영자입니다. 한국관광공사·Google·개별 장소가 운영하거나 공식 보증하는 서비스가 아닙니다. 제공기관의 데이터와 운영자가 쓴 해석은 책임 주체가 다릅니다.</p><p>검색·가이드·비교·계산·계획 저장은 로그인 없이 무료입니다. 결제, 구독, 유료 잠금은 없으며 객실·좌석 예약을 대행하거나 입장을 승인하지 않습니다. 의료·법률·안전 판단, 실시간 교통 경로, 현재 요금 견적도 제공하지 않습니다.</p><p>장소 노출은 데이터와 사용자가 선택한 조건을 따릅니다. 현재 협찬 추천 순위나 후기 점수를 운영하지 않습니다. 홈페이지에는 AdSense 사이트 연결 코드가 있으며 실제 광고 노출은 계정 승인·설정에 따라 달라집니다. 광고와 편집 내용은 구분하고, 광고 여부가 확인되지 않은 사실을 바꾸는 이유가 되지 않습니다.</p></section>
+    <section className="content-section" id="corrections"><h2>잘못된 정보는 어떻게 고치나요?</h2><p><Link to="/contact">문의 페이지</Link>에서 관련 글·장소명·자료 번호와 공개 근거를 전달해 주세요. 사이트가 원문을 잘못 표시했는지, 원자료 자체가 바뀌었는지, 상황별 해석이 부족했는지를 나누어 확인합니다. 의료 서류, 신분증, 현재 위치, API 인증키는 보내지 마세요.</p><p>본문의 판단을 바꾸는 정정은 해당 설명과 수정일에 반영하고, 오해를 낳은 결론은 이유와 함께 보완합니다. 조사 표본을 새로 조회하지 않은 경우 날짜만 최신으로 바꾸지 않습니다. 원자료를 직접 수정할 권한은 없으므로 제공기관·장소의 수정이 필요한 경우 처리 범위를 구분해 안내합니다.</p></section>
+    <section className="content-section" id="history"><h2>주요 변경 기록</h2><dl className="revision-history"><div><dt><time dateTime="2026-10-01">2026-10-01</time></dt><dd>기존 가이드 10편을 확장·재편집하고 26편을 추가했습니다. 6개 주제의 36편 독립 문서, 글별 판단표와 관련 글 연결, 운영자 이메일 문의, 개인정보 처리 범위 안내를 구성했습니다.</dd></div><div><dt><time dateTime="2026-09-26">2026-09-26</time></dt><dd>관광지·문화시설·숙박·음식점 12곳의 원문 분석과 3개 비교 사례를 공개했습니다. 후보별 문의 초안·추가비 계산·확인 보드·CSV 비교표를 연결했습니다.</dd></div><div><dt><time dateTime="2026-09-15">2026-09-15</time></dt><dd>상황별 가이드와 기기에 저장하는 방문 계획을 구성했습니다. 가상 예시와 실제 장소 자료를 구분하는 편집 원칙을 적용했습니다.</dd></div></dl><div className="source-links"><Link to="/contact">문의·정정 요청</Link><Link to="/privacy">개인정보처리방침</Link><Link to="/pet-travel/guides">가이드 목록</Link></div></section>
+  </main>;
 }

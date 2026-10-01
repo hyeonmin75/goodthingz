@@ -79,7 +79,7 @@ export default function DataNotes() {
           <p className="source-inline">한국관광공사 · 원본 수정일 {record.modifiedAt?.slice(0, 8).replace(/^(\d{4})(\d{2})(\d{2})$/, "$1-$2-$3") || "없음"} · 자료 번호 {record.id}. 현장 검증일이 아닙니다.</p>
           <div className="guide-actions">
             <Link className="text-button" to={`/pet-travel?keyword=${encodeURIComponent(record.title)}`}><Search size={16} aria-hidden="true" /> 최신 자료 조회</Link>
-            <Link className="text-button" to={`/pet-travel/guides#${note.guide}`}><BookOpen size={16} aria-hidden="true" /> 상황별 준비 가이드</Link>
+            <Link className="text-button" to={`/pet-travel/guides/${note.guide}`}><BookOpen size={16} aria-hidden="true" /> 상황별 준비 가이드</Link>
             {record.providerUrl ? <a className="text-button" href={record.providerUrl} target="_blank" rel="noreferrer">원자료에 등록된 홈페이지</a> : null}
           </div>
         </article>;

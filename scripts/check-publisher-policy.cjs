@@ -5,7 +5,8 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const base = process.env.AUDIT_BASE_URL || 'http://127.0.0.1:8790';
 
 async function main() {
-  const indexPaths = ['/', '/pet-travel', '/about', '/privacy', '/data-sources/kto-pet-tour', '/pet-travel/guides/visit-checklist', '/pet-travel/guides', '/pet-travel/data-notes'];
+  const { TRAVEL_GUIDES, guidePath } = await import('../app/content/travel-guides.ts');
+  const indexPaths = ['/', '/pet-travel', '/about', '/privacy', '/contact', '/data-sources/kto-pet-tour', '/pet-travel/guides/visit-checklist', '/pet-travel/guides', '/pet-travel/data-notes', ...TRAVEL_GUIDES.map(guide => guidePath(guide.id))];
   const titles = new Set();
   for (const route of indexPaths) {
     const response = await fetch(base + route);
@@ -25,13 +26,13 @@ async function main() {
     assert.ok(html.includes(`href="https://goodthingfor.com${route}"`), 'Canonical URL');
     for (const match of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) JSON.parse(match[1]);
     if (route === '/') {
-      assert.match(html, /내 여행에서 놓치기 쉬운 질문/);
-      assert.equal((html.match(/class="home-guide"/g) || []).length, 10);
+      assert.match(html, /여행 준비, 여섯 가지 주제로/);
+      assert.equal((html.match(/class="home-guide home-topic/g) || []).length, 6);
       assert.ok((html.match(/class="home-place"/g) || []).length > 0, 'Real candidates in SSR HTML');
       assert.doesNotMatch(html, /반려견 핫플/);
     }
     if (route === '/pet-travel') assert.ok((html.match(/class="place-card[ "]/g) || []).length > 0, 'Search results in SSR HTML');
-    if (route === '/pet-travel/guides') assert.equal((html.match(/class="decision-article"/g) || []).length, 10);
+    if (route === '/pet-travel/guides') assert.equal((html.match(/class="guide-summary"/g) || []).length, 36);
     if (route.endsWith('visit-checklist')) {
       assert.match(html, /방문 전 확인 항목/);
       assert.match(html, /"datePublished":"2026-08-31"/);
@@ -52,7 +53,7 @@ async function main() {
   assert.match(await (await fetch(base + '/pet-travel/plan')).text(), /noindex,follow/);
   const sitemap = await (await fetch(base + '/sitemap.xml')).text();
   assert.equal((sitemap.match(/<loc>/g) || []).length, indexPaths.length);
-  assert.doesNotMatch(sitemap, /\/search|\/compare|\/places\/|\/plan</);
+  assert.doesNotMatch(sitemap, /\/pet-travel\/(search|compare|places|plan)(?:[\/?<])/);
   assert.equal((await (await fetch(base + '/ads.txt')).text()).trim(), 'google.com, pub-1998974659917167, DIRECT, f08c47fec0942fa0');
   const robots = await (await fetch(base + '/robots.txt')).text();
   assert.match(robots, /Allow: \/\n/);
@@ -140,19 +141,20 @@ async function main() {
       const shared = await page.evaluate(() => window.__sharedData.text);
       assert.match(shared, /https:\/\/goodthingfor.com\/pet-travel/);
       assert.doesNotMatch(shared, /37\.5665|126\.978|거리 정보|\d+(\.\d+)?km/);
-      const privacyLink = page.locator('footer').getByRole('link', { name: '개인정보 처리 안내', exact: true });
+      const privacyLink = page.locator('footer').getByRole('link', { name: '개인정보처리방침', exact: true });
       await privacyLink.focus();
       await page.keyboard.press('Enter');
       await page.waitForURL('**/privacy');
-      assert.ok(await page.getByRole('heading', { name: '위치 권한', exact: true }).isVisible());
+      assert.ok(await page.getByRole('heading', { name: '2. 위치정보와 권한 선택', exact: true }).isVisible());
       await page.goto(base + '/');
-      assert.equal(await page.locator('.home-guide').count(), 10);
+      assert.equal(await page.locator('.home-guide').count(), 6);
       await page.getByLabel('어떤 장소를 찾으세요?').fill('강릉');
       await page.getByRole('button', { name: '검색', exact: true }).click();
       await page.waitForURL(url => url.pathname === '/pet-travel' && url.searchParams.get('keyword') === '강릉');
       assert.equal(await page.getByLabel('장소명 또는 목적', { exact: true }).inputValue(), '강릉');
       await page.goto(base + '/pet-travel/guides#overnight');
-      await page.locator('#overnight').getByRole('link', { name: '숙박 후보 찾기' }).click();
+      await page.locator('#overnight h3 a').click();
+      await page.getByRole('link', { name: '조건에 맞는 장소 찾기' }).click();
       await page.waitForURL('**/pet-travel?contentTypeId=32');
       assert.equal(await page.locator('.search-form select').inputValue(), '32');
       await page.goto(base + '/pet-travel/guides/visit-checklist');

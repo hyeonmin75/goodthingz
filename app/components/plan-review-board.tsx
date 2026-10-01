@@ -44,7 +44,7 @@ export function PlanReviewBoard({ plan, onReview }: { plan: VisitPlan; onReview:
         <span className={`review-state ${task.status}`}>{CHECK_LABELS[task.status]}</span><div><strong>{task.title}</strong><span>{task.field}</span></div>
         <button type="button" onClick={() => onReview(task.stopIndex, task.fieldIndex)} aria-label={`${task.title} ${task.field} 확인 상태 수정`} title="해당 확인 항목으로 이동"><ArrowRight size={20} aria-hidden="true" /></button>
       </li>)}</ol> : <p className="review-empty">{!plan.stops.length ? "저장한 장소를 아래에서 계획에 추가하세요." : filter === "all" ? "남은 확인 항목이 없습니다. 방문일이나 동물 조건이 달라지면 다시 확인하세요." : "이 조건에 해당하는 확인 항목이 없습니다."}</p>}
-      {!plan.stops.length ? <a className="text-button" href="#plan-candidates">첫 후보 추가 <ArrowRight size={16} aria-hidden="true" /></a> : <Link className="text-button" to="/pet-travel/guides#uncertain">답이 모호할 때 물어볼 질문 <ArrowRight size={16} aria-hidden="true" /></Link>}
+      {!plan.stops.length ? <a className="text-button" href="#plan-candidates">첫 후보 추가 <ArrowRight size={16} aria-hidden="true" /></a> : <Link className="text-button" to="/pet-travel/guides/uncertain">답이 모호할 때 물어볼 질문 <ArrowRight size={16} aria-hidden="true" /></Link>}
     </div>
     <div id="review-panel-comparison" role="tabpanel" aria-labelledby="review-tab-comparison" hidden={view !== "comparison"}>
       {plan.stops.length ? <div className="review-table-wrap" role="region" aria-label="장소별 확인 비교표" tabIndex={0}>

@@ -1,8 +1,8 @@
 import type { Route } from "./+types/home";
 import { Link } from "react-router";
-import { ArrowRight, BookOpen, Coffee, BedDouble, Trees, Search, ListChecks } from "lucide-react";
+import { ArrowRight, BookOpen, Coffee, BedDouble, Trees, Search, ListChecks, ShieldCheck, MapPin, CalendarDays, FileSearch } from "lucide-react";
 import { SiteNav } from "../components/site-nav";
-import { TRAVEL_GUIDES, GUIDE_PATH } from "../content/travel-guides";
+import { TRAVEL_GUIDES, GUIDE_PATH, GUIDE_CATEGORIES, guidePath } from "../content/travel-guides";
 import { loadInitialPlaces } from "../pet-tour.server";
 import { formatRetrievalTime } from "../visit-evidence";
 import { CASE_NOTES, STUDY_PATH, STUDY_DATE, findStudyRecord } from "../content/field-study";
@@ -32,7 +32,7 @@ export const links: Route.LinksFunction = () => [
 export function meta({}: Route.MetaArgs) {
   const title = "GoodThingz | 반려동물 여행, 동반 조건부터 비교";
   const description =
-    "실제 장소의 동반 구역·체중·이동장 조건을 비교하고, 내 동물 조건에 맞는 문의와 방문 계획을 준비하세요. 12곳 데이터 분석, 상황별 가이드, 주변 장소 검색을 제공합니다.";
+    "반려동물 여행의 동반 조건·식사·숙박·이동·예산을 준비하세요. 6개 주제 36편의 가이드, 실제 장소 12곳 분석, 주변 검색과 방문 계획을 연결합니다.";
 
   return [
     { title },
@@ -255,27 +255,22 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         <div className="section-heading">
           <div>
             <p className="eyebrow">상황별 판단 가이드</p>
-            <h2 id="home-guides-title">내 여행에서 놓치기 쉬운 질문</h2>
+            <h2 id="home-guides-title">여행 준비, 여섯 가지 주제로</h2>
           </div>
           <Link reloadDocument className="text-button" to={GUIDE_PATH}>
             가이드 전체 보기
           </Link>
         </div>
         <div className="home-guide-grid">
-          {TRAVEL_GUIDES.map((guide, index) => (
-            <Link
-              reloadDocument
-              className="home-guide"
-              to={`${GUIDE_PATH}#${guide.id}`}
-              key={guide.id}
-            >
-              <span className="guide-number">
-                {String(index + 1).padStart(2, "0")} / {guide.category}
-              </span>
-              <h3>{guide.title}</h3>
-              <span className="candidate-action">{guide.id === "budget" ? "추가비 계산과 비교" : "확인 순서와 문의 문장"} <ArrowRight size={16} aria-hidden="true" /></span>
-            </Link>
-          ))}
+          {GUIDE_CATEGORIES.map((category, index) => {
+            const Icon = [ShieldCheck, Coffee, BedDouble, MapPin, CalendarDays, FileSearch][index];
+            return <article className={`home-guide home-topic topic-${category.id}`} key={category.id}>
+              <div className="topic-title"><Icon size={24} aria-hidden="true" /><h3><Link reloadDocument to={`${GUIDE_PATH}#category-${category.id}`}>{category.name}</Link></h3><span>{category.ids.length}편</span></div>
+              <p>{category.description}</p>
+              <ul>{category.ids.slice(0, 2).map(id => <li key={id}><Link reloadDocument to={guidePath(id)}>{TRAVEL_GUIDES.find(guide => guide.id === id)!.title}<ArrowRight size={15} aria-hidden="true" /></Link></li>)}</ul>
+              <Link reloadDocument className="text-button" to={`${GUIDE_PATH}#category-${category.id}`}>{category.name} 전체 읽기</Link>
+            </article>;
+          })}
         </div>
       </section>
       <section
@@ -310,7 +305,8 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         </p>
         <div className="source-links">
           <Link reloadDocument to="/data-sources/kto-pet-tour">데이터 출처와 한계</Link>
-          <Link reloadDocument to="/about">작성 원칙·오류 제보</Link>
+          <Link reloadDocument to="/about">운영자·작성 원칙</Link>
+          <Link reloadDocument to="/contact">문의·정보 수정</Link>
           <Link reloadDocument to="/privacy">개인정보와 저장 자료</Link>
         </div>
       </section>
