@@ -13,9 +13,9 @@ export const PAGE_LAST_MODIFIED = {
 	home: "2026-10-01",
 	petTravel: "2026-09-26",
 	guides: "2026-10-01",
-	dataNotes: "2026-09-26",
+	dataNotes: "2026-10-01",
 	visitChecklist: "2026-09-26",
-	dataSource: "2026-09-26",
+	dataSource: "2026-10-01",
 	about: "2026-10-01",
 	privacy: "2026-10-01",
 } as const;

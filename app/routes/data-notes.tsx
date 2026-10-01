@@ -5,6 +5,8 @@ import { SiteNav } from "../components/site-nav";
 import { CASE_NOTES, STUDY_COMPARISONS, STUDY_DATE, STUDY_INSIGHTS, STUDY_PATH, STUDY_SAMPLE, findStudyRecord } from "../content/field-study";
 import { breadcrumbJsonLd, canonicalUrl, socialMeta } from "../seo";
 import { formatRetrievalTime } from "../visit-evidence";
+import { PAGE_LAST_MODIFIED } from "../seo";
+import { OFFICIAL_GUIDE_SOURCES } from "../content/guide-reading";
 
 export function meta({}: Route.MetaArgs) {
   const title = "반려동물 동반 조건, 실제 12곳 데이터로 비교 | GoodThingz";
@@ -16,10 +18,10 @@ export function meta({}: Route.MetaArgs) {
     ...socialMeta({ title, description, path: STUDY_PATH }),
     { "script:ld+json": [
       { "@context": "https://schema.org", "@type": "Article", headline: title, description,
-        datePublished: STUDY_DATE, dateModified: STUDY_DATE, inLanguage: "ko-KR",
+        datePublished: STUDY_DATE, dateModified: PAGE_LAST_MODIFIED.dataNotes, inLanguage: "ko-KR",
         author: { "@type": "Organization", name: "GoodThingz", url: canonicalUrl("/about") },
         mainEntityOfPage: canonicalUrl(STUDY_PATH),
-        citation: canonicalUrl("/data-sources/kto-pet-tour") },
+        citation: [canonicalUrl("/data-sources/kto-pet-tour"), OFFICIAL_GUIDE_SOURCES.tourismData.url] },
       breadcrumbJsonLd([{ name: "홈", path: "/" }, { name: "데이터 읽기", path: STUDY_PATH }]),
     ] },
   ];
@@ -34,7 +36,7 @@ export default function DataNotes() {
       <h1>같은 ‘동반 가능’,<br />실제로는 다른 조건</h1>
       <p className="lead">12곳의 실제 안내를 세 가지 여행 상황에 대입했습니다.</p>
       <p>목록의 동반 표시만으로는 함께 전시를 보거나, 식사하거나, 숙박할 수 있는지 알기 어렵습니다. 원문에서 읽은 사실과 GoodThingz의 해석을 분리해, 다음에 물어볼 질문까지 정리했습니다.</p>
-      <p className="editor-byline">작성·분석: GoodThingz · 발행 <time dateTime={STUDY_DATE}>{STUDY_DATE}</time> · 원자료: 한국관광공사 · 현장 방문·전화 확인을 한 기사가 아닙니다.</p>
+      <p className="editor-byline">글 <Link to="/about">굳띵즈</Link> · 발행 <time dateTime={STUDY_DATE}>{STUDY_DATE}</time> · 수정 <time dateTime={PAGE_LAST_MODIFIED.dataNotes}>{PAGE_LAST_MODIFIED.dataNotes}</time> · 원자료: 한국관광공사</p>
     </header>
     <section className="editorial-section study-findings" aria-labelledby="findings-title">
       <h2 id="findings-title">이번 12곳에서 확인한 차이</h2>
@@ -60,7 +62,7 @@ export default function DataNotes() {
     </section>
     <section id="records" className="editorial-section" aria-labelledby="records-title">
       <div className="section-heading"><div><p className="eyebrow">사실 → 해석 → 질문</p><h2 id="records-title">장소별로 무엇이 달랐을까?</h2></div><span className="editor-byline">{STUDY_DATE} 조사본</span></div>
-      <p className="section-context">아래는 당시 수집한 자료를 보존한 분석입니다. 현재 조건은 ‘최신 자료 조회’와 장소의 공식 안내에서 다시 확인하세요. 동일 명칭의 장소라도 적용 구역·일정이 다르면 답변이 달라질 수 있습니다.</p>
+      <p className="section-context">{STUDY_DATE}에 조회한 관광공사 자료이며 현장 방문·전화 확인 기록은 아닙니다. 방문할 날짜의 조건은 ‘최신 자료 조회’와 장소의 공식 안내에서 확인하세요.</p>
       <nav className="study-record-index" aria-label="조사 장소 목차">{CASE_NOTES.map(note => <a key={note.id} href={`#record-${note.id}`}>{findStudyRecord(note.id).title}</a>)}</nav>
       <div className="study-records">{CASE_NOTES.map((note, index) => {
         const record = findStudyRecord(note.id);
@@ -76,7 +78,7 @@ export default function DataNotes() {
           </dl></div>
           <div className="study-reading"><h4>GoodThingz가 읽은 의미</h4><p>{note.interpretation}</p></div>
           <div className="study-question"><h4>아직 답이 필요한 질문</h4><p>{note.question}</p></div>
-          <p className="source-inline">한국관광공사 · 원본 수정일 {record.modifiedAt?.slice(0, 8).replace(/^(\d{4})(\d{2})(\d{2})$/, "$1-$2-$3") || "없음"} · 자료 번호 {record.id}. 현장 검증일이 아닙니다.</p>
+          <p className="source-inline">한국관광공사 · 원본 수정일 {record.modifiedAt?.slice(0, 8).replace(/^(\d{4})(\d{2})(\d{2})$/, "$1-$2-$3") || "없음"} · 자료 번호 {record.id}</p>
           <div className="guide-actions">
             <Link className="text-button" to={`/pet-travel?keyword=${encodeURIComponent(record.title)}`}><Search size={16} aria-hidden="true" /> 최신 자료 조회</Link>
             <Link className="text-button" to={`/pet-travel/guides/${note.guide}`}><BookOpen size={16} aria-hidden="true" /> 상황별 준비 가이드</Link>
@@ -93,9 +95,9 @@ export default function DataNotes() {
         <div><dt>원자료</dt><dd>한국관광공사 반려동물 동반여행 서비스의 목록·공통·소개·동반 안내. 이번 집계는 GoodThingz가 중복 문장을 정리한 표시 항목 기준입니다. 빈 항목에 다른 항목으로 합쳐진 문장이 있을 수 있습니다.</dd></div>
         <div><dt>집계식</dt><dd>‘일부 구역’은 구역 안내가 ‘일부구역 동반가능’인 기록 수, ‘안내견’은 동물 안내가 정확히 ‘안내견’인 기록 수, ‘구역 없음’은 별도 구역 항목이 빈 기록 수입니다. 모두 12곳을 분모로 계산했습니다.</dd></div>
         <div><dt>할 수 없는 판단</dt><dd>현재 입장·예약·영업 보장, 전국 허용 비율, 방문객 만족도, 안전한 코스 여부. 자료의 최신 수정은 현장 전체 조건의 검증을 뜻하지 않습니다.</dd></div>
-        <div><dt>수정 원칙</dt><dd>새 조사와 기존 조사일을 혼동하지 않도록 수집일을 보존합니다. 사실 오류가 확인되면 근거와 수정 내용을 함께 기록합니다. 이번 글은 최초 발행본입니다.</dd></div>
       </dl>
-      <div className="source-links"><Link to="/data-sources/kto-pet-tour">원자료 출처·이용조건</Link><Link to="/about">작성 원칙·오류 제보</Link><Link to="/pet-travel/plan">내 방문 계획에 확인 내용 남기기</Link></div>
+      <ul className="source-list"><li><a href={OFFICIAL_GUIDE_SOURCES.tourismData.url} target="_blank" rel="noreferrer">한국관광공사 반려동물 동반여행 공식 데이터·참고문서</a></li><li><a href={OFFICIAL_GUIDE_SOURCES.visitKorea.url} target="_blank" rel="noreferrer">대한민국 구석구석 공식 관광 안내</a></li></ul>
+      <div className="source-links"><Link to="/data-sources/kto-pet-tour">원자료 출처·이용조건</Link><Link to="/contact">잘못된 정보 알리기</Link><Link to="/pet-travel/plan">내 방문 계획에 확인 내용 남기기</Link><Link to="/pet-travel/guides">주제별 가이드 전체 보기</Link></div>
     </section>
   </main>;
 }

@@ -36,17 +36,39 @@ async function main() {
     }
     assert.equal(new Set([...documents.values()].map(document => document.title)).size, documents.size);
     let checked = 0;
+    const graph = new Map();
     for (const [from, document] of documents) {
+      const edges = new Set();
       for (const href of document.links) {
         const url = new URL(href);
         if (![new URL(base).host, 'goodthingfor.com'].includes(url.host)) continue;
         const target = documents.get(url.pathname);
         assert.ok(target, `Unexpected internal page from ${from}: ${href}`);
         if (url.hash) assert.ok(target.ids.includes(decodeURIComponent(url.hash.slice(1))), `Broken destination from ${from}: ${href}`);
+        edges.add(url.pathname);
         checked++;
       }
+      graph.set(from, edges);
     }
-    console.log(JSON.stringify({ javascriptDisabled: 'PASS', pages: documents.size, canonicalSitemapUrls: urls.length, checkedInternalLinks: checked, metadataAndAnchors: 'PASS' }));
+    let maxClicksFromHome = 0;
+    let maxClicksFromAnyPage = 0;
+    for (const start of graph.keys()) {
+      const distances = new Map([[start, 0]]);
+      const queue = [start];
+      for (const current of queue) {
+        for (const target of graph.get(current)) {
+          if (distances.has(target)) continue;
+          distances.set(target, distances.get(current) + 1);
+          queue.push(target);
+        }
+      }
+      assert.equal(distances.size, documents.size, `Unreachable public pages from ${start}`);
+      const maxClicks = Math.max(...distances.values());
+      if (start === '/') maxClicksFromHome = maxClicks;
+      maxClicksFromAnyPage = Math.max(maxClicksFromAnyPage, maxClicks);
+    }
+    assert.ok(maxClicksFromHome <= 3, `Home navigation depth: ${maxClicksFromHome}`);
+    console.log(JSON.stringify({ javascriptDisabled: 'PASS', pages: documents.size, canonicalSitemapUrls: urls.length, checkedInternalLinks: checked, metadataAndAnchors: 'PASS', orphanPages: 0, allPublicPagesReachableFromEveryPage: 'PASS', maxClicksFromHome, maxClicksFromAnyPage }));
   } finally { await browser.close(); }
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

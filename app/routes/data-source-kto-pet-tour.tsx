@@ -1,4 +1,6 @@
 import { Link } from "react-router";
+import { SiteNav } from "../components/site-nav";
+import { OFFICIAL_GUIDE_SOURCES } from "../content/guide-reading";
 
 import type { Route } from "./+types/data-source-kto-pet-tour";
 import {
@@ -84,8 +86,8 @@ export default function DataSourceKtoPetTour() {
 				<p className="eyebrow">데이터 출처</p>
 				<h1 id="source-title">{DATA_PROVIDER} 반려동물 동반여행</h1>
 				<p className="lead">
-					GoodThingz는 공공데이터를 그대로 나열하지 않고, 사용자가 방문 전
-					판단할 수 있도록 동반 조건과 방문 정보를 정규화합니다.
+					장소의 주소, 운영 안내, 동반 구역과 준비 조건을 확인할 수 있습니다.
+					방문할 날짜의 예약과 실제 입장 조건은 해당 장소에 확인해 주세요.
 				</p>
 			</section>
 			<section className="content-section">
@@ -100,14 +102,15 @@ export default function DataSourceKtoPetTour() {
 						<dd>{DATA_SERVICE}</dd>
 					</div>
 					<div>
-						<dt>갱신 기준</dt>
-						<dd>{DATA_UPDATED}</dd>
+						<dt>자료 갱신 안내</dt>
+						<dd>공공데이터포털 표기는 실시간, 활용매뉴얼 기준은 {DATA_UPDATED}입니다. 어느 쪽도 개별 장소의 실시간 영업이나 입장 가능 여부를 보장하는 정보는 아닙니다.</dd>
 					</div>
 					<div>
 						<dt>문서 기준일</dt>
 						<dd>{DATA_SPEC_DATE}</dd>
 					</div>
 				</dl>
+				<ul className="source-list"><li><a href={OFFICIAL_GUIDE_SOURCES.tourismData.url} target="_blank" rel="noreferrer">한국관광공사 반려동물 동반여행 공식 데이터·참고문서</a></li><li><a href={OFFICIAL_GUIDE_SOURCES.visitKorea.url} target="_blank" rel="noreferrer">대한민국 구석구석 공식 관광 안내</a></li></ul>
 			</section>
 			<section className="content-section">
 				<h2>GoodThingz가 더하는 가치</h2>
@@ -139,27 +142,9 @@ export default function DataSourceKtoPetTour() {
 			<section className="content-section">
 				<h2>빈칸과 자료 오류를 읽는 방법</h2>
 				<p>같은 문장을 여러 항목에서 한 번만 표시하도록 정리하기 때문에, 한 항목이 비어 있으면 전체 동반 안내도 함께 확인해야 합니다. 전체 문장에 근거가 없으면 미확인 상태입니다. 별도 안내가 없다는 것은 허용·금지·무료를 뜻하지 않습니다.</p>
-				<p>주소 표기, 구역, 연락처가 공식 홈페이지와 다르면 일치한다고 자동 처리하지 않습니다. 장소명과 자료 번호, 두 출처의 확인 시점을 남겨 <Link to="/about">오류 제보</Link>로 전달할 수 있습니다. 현재 조건은 실제 이용할 구역과 방문일을 지정해 운영자에게 확인하세요.</p>
+				<p>주소 표기, 구역, 연락처가 공식 홈페이지와 다르면 일치한다고 자동 처리하지 않습니다. 장소명과 자료 번호, 두 출처의 확인 시점을 남겨 <Link to="/contact">오류 제보</Link>로 전달할 수 있습니다. 현재 조건은 실제 이용할 구역과 방문일을 지정해 운영자에게 확인하세요.</p>
 			</section>
 		</main>
-	);
-}
-
-function SiteNav() {
-	return (
-		<nav className="top-nav" aria-label="주요 메뉴">
-			<Link reloadDocument className="brand" to="/">
-				<span className="brand-mark" aria-hidden="true">
-					G
-				</span>
-				<span>GoodThingz</span>
-			</Link>
-			<div className="nav-links">
-				<Link to="/pet-travel">반려동물 여행</Link>
-				<Link to="/about">소개</Link>
-				<Link to="/privacy">개인정보</Link>
-			</div>
-		</nav>
 	);
 }
 

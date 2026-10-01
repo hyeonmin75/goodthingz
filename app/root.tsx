@@ -12,6 +12,7 @@ import {
 
 import type { Route } from "./+types/root";
 import { ADSENSE_CLIENT_ID, ADSENSE_SCRIPT_URL, shouldLoadAdsenseCode } from "./adsense";
+import { GUIDE_CATEGORIES, GUIDE_PATH } from "./content/travel-guides";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
@@ -53,6 +54,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 				{children}
 				</div>
 				<footer className="site-footer">
+					<nav className="footer-topics" aria-label="주제별 여행 가이드">
+						{GUIDE_CATEGORIES.map(category => <Link key={category.id} reloadDocument={loadAdsenseCode} to={`${GUIDE_PATH}#category-${category.id}`}>{category.name}</Link>)}
+					</nav>
 					<nav aria-label="운영 및 개인정보 안내">
 						<Link reloadDocument={loadAdsenseCode} to="/pet-travel/guides">방문 가이드</Link>
 						<Link reloadDocument={loadAdsenseCode} to="/pet-travel/data-notes">데이터 분석·비교 사례</Link>
